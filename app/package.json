@@ -1,0 +1,12 @@
+{
+  "name": "cert-maker",
+  "version": "1.0.0",
+  "description": "Generate a self-hosted /dev certificate through configuration.",
+  "private": false,
+  "main": "index.js",
+  "author": "soulteary",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
