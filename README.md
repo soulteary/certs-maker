@@ -2,6 +2,25 @@
 
 Generate a self-hosted /dev certificate through configuration.
 
+## Support Variables
+
+You can customize the generated certificate by declaring the environment variables of docker.
+
+- **Country Name**: `CERT_C`
+  - eg: `CERT_C=CN`
+- **State Or Province Name**: `CERT_ST`
+  - eg: `CERT_ST=BJ`
+- **Locality Name**: `CERT_L`
+  - eg: `CERT_L=HD`
+- **Organization Name**: `CERT_O`
+  - eg: `CERT_O=Lab`
+- **Organizational Unit Name**: `CERT_OU`
+  - eg: `CERT_OU=Dev`
+- **Common Name**: `CERT_CN`
+  - eg: `CERT_CN=Hello World`
+- **Domians**: `CERT_DNS`
+  - eg: `CERT_DNS=lab.com;*.lab.com;*.data.lab.com`
+
 ## Usage
 
 Use `Docker`:
