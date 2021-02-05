@@ -68,6 +68,8 @@ Wildcard domain name:
 Single domain:
 
 ```bash
+# docker run --rm -it -e CERT_DNS="*.domain.com" -v `pwd`/certs:/ssl soulteary/certs-maker
+# or
 # docker run --rm -it -e CERT_DNS=\*.domain.com -v `pwd`/certs:/ssl soulteary/certs-maker
 
 User Input: { CERT_DNS: '*.domain.com' }
@@ -87,6 +89,8 @@ Multiple domain names:
 Single domain:
 
 ```bash
+# docker run --rm -it -e CERT_DNS="a.com;*.domain.com;a.c.com" -v `pwd`/certs:/ssl soulteary/certs-maker
+# or
 # docker run --rm -it -e CERT_DNS=a.com\;\*.domain.com\;a.c.com -v `pwd`/certs:/ssl soulteary/certs-maker
 
 User Input: { CERT_DNS: 'a.com;*.domain.com;a.c.com' }
