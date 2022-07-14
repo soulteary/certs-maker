@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+
+  certs-maker:
+    image: soulteary/certs-maker
+    environment:
+      - CERT_DNS=pcce.ce.gov.br;*.pcce.ce.gov.br;
+    volumes:
+      - /VOLUMES/traefik/certs:/ssl
