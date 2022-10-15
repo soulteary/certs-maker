@@ -1,3 +1,4 @@
 ssl
 generate.sh
 certs
+.DS_Store
