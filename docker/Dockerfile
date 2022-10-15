@@ -18,5 +18,4 @@ RUN echo '' > /etc/apk/repositories && \
 RUN apk add openssl && rm -rf /var/cache/apk/*
 WORKDIR /
 COPY --from=Builder /build/cert-maker /bin/cert-maker
-COPY --from=Builder /build/entrypoint.sh /entrypoint.sh
-CMD ["/entrypoint.sh"]
+ENTRYPOINT ["cert-maker"]
