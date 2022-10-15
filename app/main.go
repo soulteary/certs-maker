@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -227,7 +229,7 @@ func uniq(s []string) []string {
 	return l
 }
 
-func generateConfFile(cert CERT) {
+func generateConfFile(cert CERT) string {
 
 	const certBase = `
 [req]
@@ -296,11 +298,26 @@ subjectAltName = @alt_names
 		os.WriteFile("./ssl/"+fileName+".conf", []byte(certBase+"\n"+certInfo+"\n"+certExtForK8S+"\n"+certDomains), 0644)
 	}
 
-	generateScript := "openssl req -x509 -newkey rsa:2048 -keyout ssl/${fileName}.key -out ssl/${fileName}.crt -days 3650 -nodes -config ssl/${fileName}.conf"
-	os.WriteFile("./generate.sh", []byte(strings.ReplaceAll(generateScript, "${fileName}", fileName)), 0644)
+	scriptTpl := "openssl req -x509 -newkey rsa:2048 -keyout ./ssl/${fileName}.key -out ./ssl/${fileName}.crt -days 3650 -nodes -config ./ssl/${fileName}.conf"
+	return strings.ReplaceAll(scriptTpl, "${fileName}", fileName)
+}
+
+func execute(command string) {
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd := exec.Command("sh", "-c", command)
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(stdout.String())
+	}
 }
 
 func main() {
 	config := mergeUserInputs()
-	generateConfFile(config)
+	shell := generateConfFile(config)
+	execute(shell)
 }
