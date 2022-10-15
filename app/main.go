@@ -24,6 +24,7 @@ type CERT struct {
 	OrganizationalUnit string
 	CommonName         string
 	Domians            []string
+	ForK8S             string
 }
 
 const (
@@ -34,6 +35,7 @@ const (
 	DEFAULT_ORGANIZATIONAL_UNIT = "Dev"                              // Organizational Unit Name
 	DEFAULT_COMMON_NAME         = "Hello World"                      // Common Name
 	DEFAULT_DOMAINS             = "lab.com,*.lab.com,*.data.lab.com" // Domians
+	DEFAULT_FORK8S              = "OFF"                              // Certs For K8S
 )
 
 func verifyCountry(input string) bool {
@@ -65,7 +67,7 @@ func getRootDomain(input string) string {
 	return file
 }
 
-func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string) (cert CERT) {
+func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string, forK8S string) (cert CERT) {
 	country = strings.TrimSpace(country)
 	if len(country) > 0 {
 		if verifyCountry(country) {
@@ -123,6 +125,19 @@ func createCertConfig(country string, state string, locality string, organizatio
 	} else {
 		cert.Domians = getDomains(DEFAULT_DOMAINS)
 	}
+
+	k8s := strings.TrimSpace(forK8S)
+	if k8s == "" {
+		cert.ForK8S = DEFAULT_FORK8S
+	} else {
+		k8s = strings.ToUpper(k8s)
+		if k8s == "ON" || k8s == "1" || k8s == "TRUE" {
+			cert.ForK8S = "ON"
+		} else {
+			cert.ForK8S = "OFF"
+		}
+	}
+
 	return cert
 }
 
@@ -134,8 +149,9 @@ func parseEnvInputs() (cert CERT) {
 	organizationalUnit := os.Getenv("CERT_OU")
 	commonName := os.Getenv("CERT_CN")
 	domains := os.Getenv("CERT_DNS")
+	forK8S := os.Getenv("FOR_K8S")
 
-	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains)
+	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S)
 }
 
 func parseCliInputs() (cert CERT) {
@@ -160,9 +176,12 @@ func parseCliInputs() (cert CERT) {
 	var domains string
 	flag.StringVar(&domains, "CERT_DNS", DEFAULT_DOMAINS, "Domians")
 
+	var forK8S string
+	flag.StringVar(&forK8S, "FOR_K8S", DEFAULT_FORK8S, "FOR K8S")
+
 	flag.Parse()
 
-	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains)
+	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S)
 }
 
 func mergeUserInputs() CERT {
@@ -190,7 +209,22 @@ func mergeUserInputs() CERT {
 	if !reflect.DeepEqual(cli.Domians, base.Domians) {
 		base.Domians = cli.Domians
 	}
+	if cli.ForK8S != base.ForK8S {
+		base.ForK8S = cli.ForK8S
+	}
 	return base
+}
+
+func uniq(s []string) []string {
+	k := make(map[string]bool)
+	l := []string{}
+	for _, i := range s {
+		if _, v := k[i]; !v {
+			k[i] = true
+			l = append(l, i)
+		}
+	}
+	return l
 }
 
 func generateConfFile(cert CERT) {
@@ -229,6 +263,24 @@ extendedKeyUsage        = critical,serverAuth
 subjectAltName          = @alt_names
 `
 
+	const certExtForK8S = `
+[req_x509v3_extensions]
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "OpenSSL Generated Server Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+`
+
+	if cert.ForK8S == "ON" {
+		cert.Domians = append(cert.Domians, "*")
+		cert.Domians = append(cert.Domians, "localhost")
+		cert.Domians = uniq(cert.Domians)
+	}
+
 	domains := []string{"[alt_names]"}
 	for idx, domain := range cert.Domians {
 		id := strconv.Itoa(idx + 1)
@@ -237,9 +289,14 @@ subjectAltName          = @alt_names
 	certDomains := strings.Join(domains, "\n")
 
 	fileName := getRootDomain(cert.Domians[0])
-	os.WriteFile("./ssl/"+fileName+".conf", []byte(certBase+"\n"+certInfo+"\n"+certExt+"\n"+certDomains), 0644)
+	if cert.ForK8S == "OFF" {
+		os.WriteFile("./ssl/"+fileName+".conf", []byte(certBase+"\n"+certInfo+"\n"+certExt+"\n"+certDomains), 0644)
+	} else {
+		fileName = fileName + ".k8s"
+		os.WriteFile("./ssl/"+fileName+".conf", []byte(certBase+"\n"+certInfo+"\n"+certExtForK8S+"\n"+certDomains), 0644)
+	}
 
-	generateScript := "openssl req -x509 -newkey rsa:2048 -keyout ssl/${fileName}.key -out ssl/${fileName}.crt -days 3600 -nodes -config ssl/${fileName}.conf"
+	generateScript := "openssl req -x509 -newkey rsa:2048 -keyout ssl/${fileName}.key -out ssl/${fileName}.crt -days 3650 -nodes -config ssl/${fileName}.conf"
 	os.WriteFile("./generate.sh", []byte(strings.ReplaceAll(generateScript, "${fileName}", fileName)), 0644)
 }
 
