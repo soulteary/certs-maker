@@ -1,4 +1,4 @@
 #!/bin/sh
 
-node /app/index.js
-sh /generate.sh
+cert-maker
+sh ./generate.sh
