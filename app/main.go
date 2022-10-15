@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -57,10 +58,87 @@ func getDomains(input string) (result []string) {
 
 func getRootDomain(input string) string {
 	var re = regexp.MustCompile(`([\.\w]+){1,2}$`)
-	return strings.TrimLeft(re.FindString(input), ".")
+	file := strings.TrimLeft(re.FindString(input), ".")
+	if file == "" {
+		return "cert"
+	}
+	return file
 }
 
-func parseUserInputs() (cert CERT) {
+func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string) (cert CERT) {
+	country = strings.TrimSpace(country)
+	if len(country) > 0 {
+		if verifyCountry(country) {
+			cert.Country = strings.ToUpper(country)
+		} else {
+			fmt.Println("wrong country name, set to default value:", DEFAULT_COUNTRY)
+		}
+	} else {
+		cert.Country = DEFAULT_COUNTRY
+	}
+
+	state = strings.TrimSpace(state)
+	if len(state) > 0 {
+		cert.State = strings.ToUpper(state)
+	} else {
+		cert.State = DEFAULT_STATE
+	}
+
+	locality = strings.TrimSpace(locality)
+	if len(locality) > 0 {
+		cert.Locality = strings.ToUpper(locality)
+	} else {
+		cert.Locality = DEFAULT_LOCALITY
+	}
+
+	organization = strings.TrimSpace(organization)
+	if len(organization) > 0 {
+		cert.Organization = organization
+	} else {
+		cert.Organization = DEFAULT_ORGANIZATION
+	}
+
+	organizationalUnit = strings.TrimSpace(organizationalUnit)
+	if len(organization) > 0 {
+		cert.OrganizationalUnit = organizationalUnit
+	} else {
+		cert.OrganizationalUnit = DEFAULT_ORGANIZATIONAL_UNIT
+	}
+
+	commonName = strings.TrimSpace(commonName)
+	if len(commonName) > 0 {
+		cert.CommonName = commonName
+	} else {
+		cert.CommonName = DEFAULT_COMMON_NAME
+	}
+
+	domainsInput := strings.TrimSpace(domains)
+	if len(domainsInput) > 0 {
+		userDomains := getDomains(domainsInput)
+		if len(userDomains) == 0 {
+			userDomains = getDomains(DEFAULT_DOMAINS)
+			fmt.Println("wrong domains, set to default value:", DEFAULT_DOMAINS)
+		}
+		cert.Domians = userDomains
+	} else {
+		cert.Domians = getDomains(DEFAULT_DOMAINS)
+	}
+	return cert
+}
+
+func parseEnvInputs() (cert CERT) {
+	country := os.Getenv("CERT_C")
+	state := os.Getenv("CERT_ST")
+	locality := os.Getenv("CERT_L")
+	organization := os.Getenv("CERT_O")
+	organizationalUnit := os.Getenv("CERT_OU")
+	commonName := os.Getenv("CERT_CN")
+	domains := os.Getenv("CERT_DNS")
+
+	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains)
+}
+
+func parseCliInputs() (cert CERT) {
 	var country string
 	flag.StringVar(&country, "CERT_C", DEFAULT_COUNTRY, "Country Name")
 
@@ -84,47 +162,35 @@ func parseUserInputs() (cert CERT) {
 
 	flag.Parse()
 
-	country = strings.TrimSpace(country)
-	if len(country) > 0 {
-		if verifyCountry(country) {
-			cert.Country = strings.ToUpper(country)
-		} else {
-			fmt.Println("wrong country name, set to default value:", DEFAULT_COUNTRY)
-		}
-	}
+	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains)
+}
 
-	state = strings.TrimSpace(state)
-	if len(state) > 0 {
-		cert.State = strings.ToUpper(state)
-	}
+func mergeUserInputs() CERT {
+	base := parseEnvInputs()
+	cli := parseCliInputs()
 
-	locality = strings.TrimSpace(locality)
-	if len(locality) > 0 {
-		cert.Locality = strings.ToUpper(locality)
+	if cli.Country != DEFAULT_COUNTRY {
+		base.Country = cli.Country
 	}
-
-	organization = strings.TrimSpace(organization)
-	if len(organization) > 0 {
-		cert.Organization = organization
+	if cli.State != DEFAULT_STATE {
+		base.State = cli.State
 	}
-
-	organizationalUnit = strings.TrimSpace(organizationalUnit)
-	if len(organization) > 0 {
-		cert.OrganizationalUnit = organizationalUnit
+	if cli.Locality != DEFAULT_LOCALITY {
+		base.Locality = cli.Locality
 	}
-
-	commonName = strings.TrimSpace(commonName)
-	if len(commonName) > 0 {
-		cert.CommonName = commonName
+	if cli.Organization != DEFAULT_ORGANIZATION {
+		base.Organization = cli.Organization
 	}
-
-	userDomains := getDomains(strings.TrimSpace(domains))
-	if len(userDomains) == 0 {
-		userDomains = getDomains(DEFAULT_DOMAINS)
-		fmt.Println("wrong domains, set to default value:", DEFAULT_DOMAINS)
+	if cli.OrganizationalUnit != DEFAULT_ORGANIZATIONAL_UNIT {
+		base.OrganizationalUnit = cli.OrganizationalUnit
 	}
-	cert.Domians = userDomains
-	return cert
+	if cli.CommonName != DEFAULT_COMMON_NAME {
+		base.CommonName = cli.CommonName
+	}
+	if !reflect.DeepEqual(cli.Domians, base.Domians) {
+		base.Domians = cli.Domians
+	}
+	return base
 }
 
 func generateConfFile(cert CERT) {
@@ -178,6 +244,6 @@ subjectAltName          = @alt_names
 }
 
 func main() {
-	config := parseUserInputs()
+	config := mergeUserInputs()
 	generateConfFile(config)
 }
