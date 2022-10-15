@@ -31,13 +31,13 @@ You can customize the generated certificate by declaring the environment variabl
 
 ## Usage
 
-Use `Docker`:
+Generate certificate via cli args:
 
 ```bash
-docker run --rm -it -e parameter=... -v `pwd`/certs:/ssl soulteary/certs-maker
+docker run --rm -it -v `pwd`/certs:/ssl soulteary/certs-maker --FOR_K8S=on
 ```
 
-Or use `docker-compose`:
+OR use `docker-compose`:
 
 ```yaml
 version: '2'
@@ -50,6 +50,18 @@ services:
       - CERT_DNS=a.com;b.com;c.com;*.d.com;
     volumes:
       - ./certs:/ssl
+```
+
+OR, Generate certificate via environment variable:
+
+```bash
+docker run --rm -it -e parameter=... -v `pwd`/certs:/ssl soulteary/certs-maker
+```
+
+OR, Both use cli args and environment variables:
+
+```bash
+docker run --rm -it -e parameter=... -v `pwd`/certs:/ssl soulteary/certs-maker --FOR_K8S=on
 ```
 
 ## Example
