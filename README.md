@@ -26,6 +26,8 @@ You can customize the generated certificate by declaring the environment variabl
   - eg: `CERT_CN=Hello World`
 - **Domians**: `CERT_DNS`
   - eg: `CERT_DNS=lab.com;*.lab.com;*.data.lab.com`
+- **For K8S**: `FOR_K8S`
+  - eg: `FOR_K8S=ON`
 
 ## Usage
 
