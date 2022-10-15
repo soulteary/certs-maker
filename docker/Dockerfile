@@ -16,7 +16,7 @@ RUN echo '' > /etc/apk/repositories && \
     echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.16/community"    >> /etc/apk/repositories && \
     echo "Asia/Shanghai" > /etc/timezone
 RUN apk add openssl && rm -rf /var/cache/apk/*
-WORKDIR /app
+WORKDIR /
 COPY --from=Builder /build/cert-maker /bin/cert-maker
 COPY --from=Builder /build/entrypoint.sh /entrypoint.sh
 CMD ["/entrypoint.sh"]
