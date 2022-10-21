@@ -40,6 +40,8 @@ const (
 	DEFAULT_FORK8S              = "OFF"                              // Certs For K8S
 )
 
+var Version = "dev"
+
 func verifyCountry(input string) bool {
 	var re = regexp.MustCompile(`^\w{2}$`)
 	ret := re.FindString(input)
@@ -317,6 +319,7 @@ func execute(command string) {
 }
 
 func main() {
+	fmt.Printf("running soulteary/certs-maker %s\n", Version)
 	config := mergeUserInputs()
 	shell := generateConfFile(config)
 	execute(shell)
