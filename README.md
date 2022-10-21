@@ -6,8 +6,48 @@
 
 Generate a self-hosted / dev certificate through configuration.
 
-
 <img src="screenshots/docker.png">
+
+## Quick Start
+
+Generate self-signed certificate supporting `*.lab.com` and `*.data.lab.com`, just "One Click":
+
+```bash
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
+# OR use environment:
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker
+```
+
+Check in the `ssl` directory of the execution command directory:
+
+```bash
+ssl
+├── lab.com.conf
+├── lab.com.crt
+└── lab.com.key
+```
+
+If you prefer to use file configuration, you can use `docker-compose.yml` like this:
+
+```yaml
+version: '2'
+services:
+
+certs-maker:
+    image: soulteary/certs-maker
+    environment:
+      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
+    volumes:
+      - ./ssl:/ssl
+```
+
+Then execute the following command:
+
+```bash
+docker-compose up
+# OR
+# docker compose up
+```
 
 ## SSL certificate parameters
 
@@ -23,7 +63,7 @@ Use in environment variables:
 | Organization Name | CERT_O | `CERT_O=Lab` | `--CERT_O=Lab` |
 | Organizational Unit Name | CERT_OU | `CERT_OU=Dev` | `--CERT_OU=Dev` |
 | Common Name | CERT_CN | `CERT_CN=Hello World` | `--CERT_CN=Hello World` |
-| Domians | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` | `--CERT_DNS=yourdomain.com` |
+| Domians | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `FOR_K8S=ON` | `--FOR_K8S=ON` |
 
 Use in Program CLI arguments:
@@ -39,40 +79,6 @@ Use in Program CLI arguments:
 | Domians | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
 
-## Usage
-
-Generate certificate via cli args:
-
-```bash
-docker run --rm -it -v `pwd`/certs:/ssl soulteary/certs-maker --FOR_K8S=on
-```
-
-OR use `docker-compose`:
-
-```yaml
-version: '2'
-
-services:
-
-  certs-maker:
-    image: soulteary/certs-maker
-    environment:
-      - CERT_DNS=a.com;b.com;c.com;*.d.com;
-    volumes:
-      - ./certs:/ssl
-```
-
-OR, Generate certificate via environment variable:
-
-```bash
-docker run --rm -it -e parameter=... -v `pwd`/certs:/ssl soulteary/certs-maker
-```
-
-OR, Both use cli args and environment variables:
-
-```bash
-docker run --rm -it -e parameter=... -v `pwd`/certs:/ssl soulteary/certs-maker --FOR_K8S=on
-```
 
 ## Example
 
