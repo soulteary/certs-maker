@@ -208,7 +208,7 @@ func mergeUserInputs() CERT {
 	if cli.CommonName != DEFAULT_COMMON_NAME {
 		base.CommonName = cli.CommonName
 	}
-	if !reflect.DeepEqual(cli.Domians, base.Domians) {
+	if !reflect.DeepEqual(cli.Domians, getDomains(DEFAULT_DOMAINS)) {
 		base.Domians = cli.Domians
 	}
 	if cli.ForK8S != base.ForK8S {
