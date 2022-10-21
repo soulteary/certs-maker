@@ -1,5 +1,7 @@
 # Certs Maker
 
+[![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml)
+
 Small self-signed tool, ~ 3MB Size.
 
 Generate a self-hosted /dev certificate through configuration.
@@ -7,27 +9,20 @@ Generate a self-hosted /dev certificate through configuration.
 
 <img src="screenshots/docker.png">
 
+## SSL certificate parameters
 
-## Support Variables
+You can customize the generated certificate by declaring the environment variables or cli args of docker.
 
-You can customize the generated certificate by declaring the environment variables of docker.
-
-- **Country Name**: `CERT_C`
-  - eg: `CERT_C=CN`
-- **State Or Province Name**: `CERT_ST`
-  - eg: `CERT_ST=BJ`
-- **Locality Name**: `CERT_L`
-  - eg: `CERT_L=HD`
-- **Organization Name**: `CERT_O`
-  - eg: `CERT_O=Lab`
-- **Organizational Unit Name**: `CERT_OU`
-  - eg: `CERT_OU=Dev`
-- **Common Name**: `CERT_CN`
-  - eg: `CERT_CN=Hello World`
-- **Domians**: `CERT_DNS`
-  - eg: `CERT_DNS=lab.com;*.lab.com;*.data.lab.com`
-- **For K8S**: `FOR_K8S`
-  - eg: `FOR_K8S=ON`
+| Parameter | Name | Example |
+| ------ | ------ | ------ |
+| Country Name | CERT_C | `CERT_C=CN` |
+| State Or Province Name | CERT_ST | `CERT_ST=BJ` |
+| Locality Name | CERT_L | `CERT_L=HD` |
+| Organization Name | CERT_O | `CERT_O=Lab` |
+| Organizational Unit Name | CERT_OU | `CERT_OU=Dev` |
+| Common Name | CERT_CN | `CERT_CN=Hello World` |
+| Domians | CERT_DNS | `CERT_DNS=lab.com;*.lab.com;*.data.lab.com` |
+| Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
 
 ## Usage
 
