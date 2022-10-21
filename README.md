@@ -2,9 +2,9 @@
 
 [![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml)
 
-Small self-signed tool, ~ 3MB Size.
+**Tiny self-signed tool, ~ 3MB Size.**
 
-Generate a self-hosted /dev certificate through configuration.
+Generate a self-hosted / dev certificate through configuration.
 
 
 <img src="screenshots/docker.png">
