@@ -13,16 +13,31 @@ Generate a self-hosted /dev certificate through configuration.
 
 You can customize the generated certificate by declaring the environment variables or cli args of docker.
 
-| Parameter | Name | Example |
+Use in environment variables:
+
+| Parameter | Name | Use in environment variables |
 | ------ | ------ | ------ |
-| Country Name | CERT_C | `CERT_C=CN` |
-| State Or Province Name | CERT_ST | `CERT_ST=BJ` |
-| Locality Name | CERT_L | `CERT_L=HD` |
-| Organization Name | CERT_O | `CERT_O=Lab` |
-| Organizational Unit Name | CERT_OU | `CERT_OU=Dev` |
-| Common Name | CERT_CN | `CERT_CN=Hello World` |
-| Domians | CERT_DNS | `CERT_DNS=lab.com;*.lab.com;*.data.lab.com` |
-| Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
+| Country Name | CERT_C | `CERT_C=CN` | `--CERT_C=CN` |
+| State Or Province Name | CERT_ST | `CERT_ST=BJ` | `--CERT_ST=BJ` |
+| Locality Name | CERT_L | `CERT_L=HD` | `--CERT_L=HD` |
+| Organization Name | CERT_O | `CERT_O=Lab` | `--CERT_O=Lab` |
+| Organizational Unit Name | CERT_OU | `CERT_OU=Dev` | `--CERT_OU=Dev` |
+| Common Name | CERT_CN | `CERT_CN=Hello World` | `--CERT_CN=Hello World` |
+| Domians | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` | `--CERT_DNS=yourdomain.com` |
+| Issue for K8s | FOR_K8S | `FOR_K8S=ON` | `--FOR_K8S=ON` |
+
+Use in Program CLI arguments:
+
+| Parameter | Name | Use in CLI arguments |
+| ------ | ------ | ------ |
+| Country Name | CERT_C | `--CERT_C=CN` |
+| State Or Province Name | CERT_ST | `--CERT_ST=BJ` |
+| Locality Name | CERT_L | `--CERT_L=HD` |
+| Organization Name | CERT_O | `--CERT_O=Lab` |
+| Organizational Unit Name | CERT_OU | `--CERT_OU=Dev` |
+| Common Name | CERT_CN | `--CERT_CN=Hello World` |
+| Domians | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
+| Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
 
 ## Usage
 
