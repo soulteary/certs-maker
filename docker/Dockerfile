@@ -6,7 +6,8 @@ RUN echo '' > /etc/apk/repositories && \
 RUN apk add upx
 WORKDIR /build
 ENV CGO_ENABLED=0
-COPY ./app .
+COPY ./main.go .
+COPY ./go.mod .
 RUN go build -ldflags "-w -s"
 RUN upx -9 -o cert-maker.minify cert-maker && mv cert-maker.minify cert-maker
 

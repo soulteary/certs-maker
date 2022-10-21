@@ -41,7 +41,6 @@ jobs:
       -
         name: Tests
         run: |
-          cd app
           go mod tidy
           go test -v ./...
       - name: Login to Docker Hub
@@ -57,6 +56,5 @@ jobs:
         with:
           version: latest
           args: release --rm-dist
-          workdir: app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
