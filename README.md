@@ -6,6 +6,8 @@
   <a href="README.md" target="_blank">ENGLISH</a> | <a href="README_CN.md">中文文档</a>
 </p>
 
+<img src="logo.png">
+
 **Tiny self-signed tool, ~ 3MB Size.**
 
 Generate a self-hosted / dev certificate through configuration.

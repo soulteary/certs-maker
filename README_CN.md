@@ -2,6 +2,8 @@
 
 [![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml)
 
+<img src="logo.png">
+
 一个小巧的 SSL 证书生成工具（Docker 工具镜像），容器镜像尺寸只有 3MB 左右。
 
 你可以使用它快速生成需要的自签名证书，用于生产或开发场景。
