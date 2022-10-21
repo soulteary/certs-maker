@@ -2,3 +2,6 @@ ssl
 generate.sh
 certs
 .DS_Store
+screenshots
+*.md
+.github
