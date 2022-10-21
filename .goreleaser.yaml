@@ -23,7 +23,7 @@ dockers:
   - image_templates:
       - "soulteary/certs-maker:linux-amd64-{{ .Tag }}"
       - "soulteary/certs-maker:linux-amd64"
-    dockerfile: docker/Dockerfile.gorelease
+    dockerfile: docker/Dockerfile.goreleaser
     use: buildx
     goarch: amd64
     build_flag_templates:
@@ -41,7 +41,7 @@ dockers:
   - image_templates:
       - "soulteary/certs-maker:linux-arm64-{{ .Tag }}"
       - "soulteary/certs-maker:linux-arm64"
-    dockerfile: docker/Dockerfile.gorelease
+    dockerfile: docker/Dockerfile.goreleaser
     use: buildx
     goos: linux
     goarch: arm64
@@ -61,7 +61,7 @@ dockers:
   - image_templates:
       - "soulteary/certs-maker:linux-armv7-{{ .Tag }}"
       - "soulteary/certs-maker:linux-armv7"
-    dockerfile: docker/Dockerfile.gorelease
+    dockerfile: docker/Dockerfile.goreleaser
     use: buildx
     goos: linux
     goarch: arm
@@ -81,7 +81,7 @@ dockers:
   - image_templates:
       - "soulteary/certs-maker:linux-armv6-{{ .Tag }}"
       - "soulteary/certs-maker:linux-armv6"
-    dockerfile: docker/Dockerfile.gorelease
+    dockerfile: docker/Dockerfile.goreleaser
     use: buildx
     goos: linux
     goarch: arm
