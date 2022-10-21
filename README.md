@@ -2,6 +2,10 @@
 
 [![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml)
 
+<p style="text-align: center;">
+  <a href="README.md" target="_blank">ENGLISH</a> | <a href="README_CN.md">中文文档</a>
+</p>
+
 **Tiny self-signed tool, ~ 3MB Size.**
 
 Generate a self-hosted / dev certificate through configuration.
