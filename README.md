@@ -49,6 +49,31 @@ docker-compose up
 # docker compose up
 ```
 
+If you want the certificate to be more friendly to K8s, you can add the `FOR_K8S` parameter:
+
+```bash
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
+# OR
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker
+```
+
+And K8S friendly compose file:
+
+```yaml
+version: '2'
+services:
+
+certs-maker:
+    image: soulteary/certs-maker
+    environment:
+      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
+      - FOR_K8S=ON
+    volumes:
+      - ./ssl:/ssl
+```
+
+If you want to further define the information content of the certificate, including the issuing country, province, street, organization name, etc., you can refer to the following document to manually add parameters.
+
 ## SSL certificate parameters
 
 You can customize the generated certificate by declaring the environment variables or cli args of docker.
@@ -79,70 +104,6 @@ Use in Program CLI arguments:
 | Domians | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
 
-
-## Example
-
-Single domain name:
-
-```bash
-# docker run --rm -it -e CERT_DNS=domain.com -v `pwd`/certs:/ssl soulteary/certs-maker
-
-User Input: { CERT_DNS: 'domain.com' }
-Generating a RSA private key
-..............................................................+++++
-.......+++++
-writing new private key to 'ssl/domain.com.key'
------
-
-# ls certs
-domain.com.conf domain.com.crt  domain.com.key
-```
-
-Wildcard domain name:
-
-```bash
-Single domain:
-
-```bash
-# docker run --rm -it -e CERT_DNS="*.domain.com" -v `pwd`/certs:/ssl soulteary/certs-maker
-# or
-# docker run --rm -it -e CERT_DNS=\*.domain.com -v `pwd`/certs:/ssl soulteary/certs-maker
-
-User Input: { CERT_DNS: '*.domain.com' }
-Generating a RSA private key
-..................+++++
-.......................................................+++++
-writing new private key to 'ssl/*.domain.com.key'
------
-
-# ls certs
-*.domain.com.conf *.domain.com.crt  *.domain.com.key
-```
-
-Multiple domain names:
-
-```bash
-Single domain:
-
-```bash
-# docker run --rm -it -e CERT_DNS="a.com;*.domain.com;a.c.com" -v `pwd`/certs:/ssl soulteary/certs-maker
-# or
-# docker run --rm -it -e CERT_DNS=a.com\;\*.domain.com\;a.c.com -v `pwd`/certs:/ssl soulteary/certs-maker
-
-User Input: { CERT_DNS: 'a.com;*.domain.com;a.c.com' }
-Generating a RSA private key
-...+++++
-................................................................................................................................................+++++
-writing new private key to 'ssl/a.com.key'
------
-
-# ls certs
-a.com.conf a.com.crt  a.com.key
-```
-
 ## Docker Image
 
 [soulteary/certs-maker](https://hub.docker.com/r/soulteary/certs-maker)
-## LICENSE
-
-[MIT](https://github.com/soulteary/certs-maker/blob/master/LICENSE)
