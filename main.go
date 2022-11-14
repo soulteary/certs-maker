@@ -49,7 +49,7 @@ func verifyCountry(input string) bool {
 }
 
 func getDomains(input string) (result []string) {
-	var re = regexp.MustCompile(`^([\.\w\*]+(\,)?){1,}$`)
+	var re = regexp.MustCompile(`^([\.\w\*\-\_]+(\,)?){1,}$`)
 	if len(re.FindAllString(input, -1)) > 0 {
 		domains := strings.Split(input, ",")
 		for _, domain := range domains {
