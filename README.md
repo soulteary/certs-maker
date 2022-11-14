@@ -1,6 +1,6 @@
 # Certs Maker
 
-[![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml)
+[![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml) [![Docker Image](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker)
 
 <p style="text-align: center;">
   <a href="README.md" target="_blank">ENGLISH</a> | <a href="README_CN.md">中文文档</a>
