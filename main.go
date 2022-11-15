@@ -27,6 +27,9 @@ type CERT struct {
 	CommonName         string
 	Domians            []string
 	ForK8S             string
+	OwnUser            string
+	OwnUID             string
+	OwnGID             string
 }
 
 const (
@@ -71,7 +74,7 @@ func getRootDomain(input string) string {
 	return file
 }
 
-func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string, forK8S string) (cert CERT) {
+func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string, forK8S string, user string, uid string, gid string) (cert CERT) {
 	country = strings.TrimSpace(country)
 	if len(country) > 0 {
 		if verifyCountry(country) {
@@ -142,6 +145,15 @@ func createCertConfig(country string, state string, locality string, organizatio
 		}
 	}
 
+	user = strings.TrimSpace(user)
+	uid = strings.TrimSpace(uid)
+	gid = strings.TrimSpace(gid)
+	if user != "" && uid != "" && gid != "" {
+		cert.OwnUser = user
+		cert.OwnUID = uid
+		cert.OwnGID = gid
+	}
+
 	return cert
 }
 
@@ -154,8 +166,11 @@ func parseEnvInputs() (cert CERT) {
 	commonName := os.Getenv("CERT_CN")
 	domains := os.Getenv("CERT_DNS")
 	forK8S := os.Getenv("FOR_K8S")
+	user := os.Getenv("USER")
+	uid := os.Getenv("UID")
+	gid := os.Getenv("GID")
 
-	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S)
+	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S, user, uid, gid)
 }
 
 func parseCliInputs() (cert CERT) {
@@ -183,9 +198,18 @@ func parseCliInputs() (cert CERT) {
 	var forK8S string
 	flag.StringVar(&forK8S, "FOR_K8S", DEFAULT_FORK8S, "FOR K8S")
 
+	var user string
+	flag.StringVar(&user, "USER", "", "File Owner Username")
+
+	var uid string
+	flag.StringVar(&uid, "UID", "", "File Owner UID")
+
+	var gid string
+	flag.StringVar(&gid, "GID", "", "File Owner GID")
+
 	flag.Parse()
 
-	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S)
+	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S, user, uid, gid)
 }
 
 func mergeUserInputs() CERT {
@@ -216,6 +240,14 @@ func mergeUserInputs() CERT {
 	if cli.ForK8S != base.ForK8S {
 		base.ForK8S = cli.ForK8S
 	}
+	if cli.OwnUser != "" && cli.OwnUID != "" && cli.OwnGID != "" {
+		if cli.OwnUser != base.OwnUser && cli.OwnUID != base.OwnUID && cli.OwnGID != base.OwnGID {
+			base.OwnUser = cli.OwnUser
+			base.OwnUID = cli.OwnUID
+			base.OwnGID = cli.OwnGID
+		}
+	}
+
 	return base
 }
 
@@ -304,6 +336,17 @@ subjectAltName = @alt_names
 	return strings.ReplaceAll(scriptTpl, "${fileName}", fileName)
 }
 
+func tryAdjustPermissions(cert CERT) {
+	if cert.OwnUser == "" ||
+		cert.OwnUID == "" ||
+		cert.OwnGID == "" {
+		return
+	}
+	execute(`addgroup -g ` + cert.OwnGID + ` ` + cert.OwnUser)
+	execute(`adduser -g "" -G ` + cert.OwnUser + ` -H -D -u ` + cert.OwnUID + ` ` + cert.OwnUser)
+	execute(`chown -R ` + cert.OwnUser + `:` + cert.OwnUser + ` ./ssl`)
+}
+
 func execute(command string) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
@@ -323,4 +366,5 @@ func main() {
 	config := mergeUserInputs()
 	shell := generateConfFile(config)
 	execute(shell)
+	tryAdjustPermissions(config)
 }
