@@ -63,7 +63,7 @@ func getDomains(input string) (result []string) {
 }
 
 func getRootDomain(input string) string {
-	var re = regexp.MustCompile(`([\.\w]+){1,2}$`)
+	var re = regexp.MustCompile(`([\.\w\-\_]+){1,2}$`)
 	file := strings.TrimLeft(re.FindString(input), ".")
 	if file == "" {
 		return "cert"
