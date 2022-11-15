@@ -43,7 +43,7 @@ certs-maker:
       - ./ssl:/ssl
 ```
 
-Then execute the following command:
+接着，执行下面的命令：
 
 ```bash
 docker-compose up
@@ -84,14 +84,18 @@ certs-maker:
 
 | 类型 | 名称 | 如何在环境变量中使用 |
 | ------ | ------ | ------ |
-| Country Name | CERT_C | `CERT_C=CN` | `--CERT_C=CN` |
-| State Or Province Name | CERT_ST | `CERT_ST=BJ` | `--CERT_ST=BJ` |
-| Locality Name | CERT_L | `CERT_L=HD` | `--CERT_L=HD` |
-| Organization Name | CERT_O | `CERT_O=Lab` | `--CERT_O=Lab` |
-| Organizational Unit Name | CERT_OU | `CERT_OU=Dev` | `--CERT_OU=Dev` |
-| Common Name | CERT_CN | `CERT_CN=Hello World` | `--CERT_CN=Hello World` |
+| Country Name | CERT_C | `CERT_C=CN` |
+| State Or Province Name | CERT_ST | `CERT_ST=BJ` |
+| Locality Name | CERT_L | `CERT_L=HD` |
+| Organization Name | CERT_O | `CERT_O=Lab` |
+| Organizational Unit Name | CERT_OU | `CERT_OU=Dev` |
+| Common Name | CERT_CN | `CERT_CN=Hello World` |
 | Domians | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
-| Issue for K8s | FOR_K8S | `FOR_K8S=ON` | `--FOR_K8S=ON` |
+| Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
+| File Owner User | USER | `USER=ubuntu` |
+| File Owner UID | UID | `UID=1234` |
+| File Owner GID | GID | `GID=2345` |
+
 
 使用命令行参数：
 
@@ -105,6 +109,9 @@ certs-maker:
 | Common Name | CERT_CN | `--CERT_CN=Hello World` |
 | Domians | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
+| File Owner User | USER | `--USER=ubuntu` |
+| File Owner UID | UID | `--UID=1234` |
+| File Owner GID | GID | `--GID=2345` |
 
 ## Docker 镜像发布地址
 
