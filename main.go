@@ -345,6 +345,7 @@ func tryAdjustPermissions(cert CERT) {
 	execute(`addgroup -g ` + cert.OwnGID + ` ` + cert.OwnUser)
 	execute(`adduser -g "" -G ` + cert.OwnUser + ` -H -D -u ` + cert.OwnUID + ` ` + cert.OwnUser)
 	execute(`chown -R ` + cert.OwnUser + `:` + cert.OwnUser + ` ./ssl`)
+	execute(`chmod -R a+r ./ssl`)
 }
 
 func execute(command string) {
