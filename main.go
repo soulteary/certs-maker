@@ -25,7 +25,7 @@ type CERT struct {
 	Organization       string
 	OrganizationalUnit string
 	CommonName         string
-	Domians            []string
+	Domains            []string
 	ForK8S             string
 	OwnUser            string
 	OwnUID             string
@@ -39,7 +39,7 @@ const (
 	DEFAULT_ORGANIZATION        = "Lab"                              // Organization Name
 	DEFAULT_ORGANIZATIONAL_UNIT = "Dev"                              // Organizational Unit Name
 	DEFAULT_COMMON_NAME         = "Hello World"                      // Common Name
-	DEFAULT_DOMAINS             = "lab.com,*.lab.com,*.data.lab.com" // Domians
+	DEFAULT_DOMAINS             = "lab.com,*.lab.com,*.data.lab.com" // Domains
 	DEFAULT_FORK8S              = "OFF"                              // Certs For K8S
 )
 
@@ -128,9 +128,9 @@ func createCertConfig(country string, state string, locality string, organizatio
 			userDomains = getDomains(DEFAULT_DOMAINS)
 			fmt.Println("wrong domains, set to default value:", DEFAULT_DOMAINS)
 		}
-		cert.Domians = userDomains
+		cert.Domains = userDomains
 	} else {
-		cert.Domians = getDomains(DEFAULT_DOMAINS)
+		cert.Domains = getDomains(DEFAULT_DOMAINS)
 	}
 
 	k8s := strings.TrimSpace(forK8S)
@@ -193,7 +193,7 @@ func parseCliInputs() (cert CERT) {
 	flag.StringVar(&commonName, "CERT_CN", DEFAULT_COMMON_NAME, "Common Name")
 
 	var domains string
-	flag.StringVar(&domains, "CERT_DNS", DEFAULT_DOMAINS, "Domians")
+	flag.StringVar(&domains, "CERT_DNS", DEFAULT_DOMAINS, "Domains")
 
 	var forK8S string
 	flag.StringVar(&forK8S, "FOR_K8S", DEFAULT_FORK8S, "FOR K8S")
@@ -234,8 +234,8 @@ func mergeUserInputs() CERT {
 	if cli.CommonName != DEFAULT_COMMON_NAME {
 		base.CommonName = cli.CommonName
 	}
-	if !reflect.DeepEqual(cli.Domians, getDomains(DEFAULT_DOMAINS)) {
-		base.Domians = cli.Domians
+	if !reflect.DeepEqual(cli.Domains, getDomains(DEFAULT_DOMAINS)) {
+		base.Domains = cli.Domains
 	}
 	if cli.ForK8S != base.ForK8S {
 		base.ForK8S = cli.ForK8S
@@ -312,19 +312,19 @@ subjectAltName = @alt_names
 `
 
 	if cert.ForK8S == "ON" {
-		cert.Domians = append(cert.Domians, "*")
-		cert.Domians = append(cert.Domians, "localhost")
-		cert.Domians = uniq(cert.Domians)
+		cert.Domains = append(cert.Domains, "*")
+		cert.Domains = append(cert.Domains, "localhost")
+		cert.Domains = uniq(cert.Domains)
 	}
 
 	domains := []string{"[alt_names]"}
-	for idx, domain := range cert.Domians {
+	for idx, domain := range cert.Domains {
 		id := strconv.Itoa(idx + 1)
 		domains = append(domains, "DNS."+id+" = "+domain)
 	}
 	certDomains := strings.Join(domains, "\n")
 
-	fileName := getRootDomain(cert.Domians[0])
+	fileName := getRootDomain(cert.Domains[0])
 	if cert.ForK8S == "OFF" {
 		os.WriteFile("./ssl/"+fileName+".conf", []byte(certBase+"\n"+certInfo+"\n"+certExt+"\n"+certDomains), 0644)
 	} else {

@@ -94,7 +94,7 @@ Use in environment variables:
 | Organization Name | CERT_O | `CERT_O=Lab` |
 | Organizational Unit Name | CERT_OU | `CERT_OU=Dev` |
 | Common Name | CERT_CN | `CERT_CN=Hello World` |
-| Domians | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
+| Domains | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
 | File Owner User | USER | `USER=ubuntu` |
 | File Owner UID | UID | `UID=1234` |
@@ -110,7 +110,7 @@ Use in Program CLI arguments:
 | Organization Name | CERT_O | `--CERT_O=Lab` |
 | Organizational Unit Name | CERT_OU | `--CERT_OU=Dev` |
 | Common Name | CERT_CN | `--CERT_CN=Hello World` |
-| Domians | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
+| Domains | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
 | File Owner User | USER | `--USER=ubuntu` |
 | File Owner UID | UID | `--UID=1234` |
