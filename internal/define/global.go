@@ -13,6 +13,7 @@ const (
 	DEFAULT_USER    = ""
 	DEFAULT_UID     = ""
 	DEFAULT_GID     = ""
+	DEFAULT_DIR     = "./ssl"
 )
 
 var (
@@ -28,4 +29,5 @@ var (
 	APP_USER    string
 	APP_UID     string
 	APP_GID     string
+	APP_DIR     string
 )

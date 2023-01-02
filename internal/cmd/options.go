@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"os"
+	"path"
+	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/soulteary/certs-maker/internal/fn"
@@ -43,4 +46,16 @@ func UpdateDomainOption(key string, args string, defaults string) []string {
 	value := UpdateStringOption(key, args, defaults)
 	domains := fn.GetDomainsByString(value)
 	return domains
+}
+
+func SantizeDirPath(key string, args string, defaults string) string {
+	value := UpdateStringOption(key, args, defaults)
+	if value == defaults {
+		return defaults
+	}
+	s := strings.ToLower(value)
+	s = strings.Replace(s, "..", "", -1)
+	s = strings.Replace(s, "./", "", -1)
+	s = regexp.MustCompile(`[^[:alnum:]\~\-\./]`).ReplaceAllString(s, "")
+	return strings.TrimLeft(strings.TrimRight(filepath.Clean(path.Clean(s)), "/"), "/")
 }

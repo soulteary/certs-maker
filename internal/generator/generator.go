@@ -1,7 +1,9 @@
 package generator
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -42,14 +44,16 @@ func GenerateConfFile() string {
 
 	fileName := fn.GetDomainName(define.CERT_DOMAINS[0])
 	if !define.APP_FOR_K8S {
-		os.WriteFile("./ssl/"+fileName+".conf", []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS+"\n"+certDomains), 0644)
+		confPath := filepath.Join(define.APP_DIR, fileName+".conf")
+		os.WriteFile(confPath, []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS+"\n"+certDomains), 0644)
 	} else {
 		fileName = fileName + ".k8s"
-		os.WriteFile("./ssl/"+fileName+".conf", []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS_K8S+"\n"+certDomains), 0644)
+		confPath := filepath.Join(define.APP_DIR, fileName+".conf")
+		os.WriteFile(confPath, []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS_K8S+"\n"+certDomains), 0644)
 	}
 
-	scriptTpl := "openssl req -x509 -newkey rsa:2048 -keyout ./ssl/${fileName}.key -out ./ssl/${fileName}.crt -days 3650 -nodes -config ./ssl/${fileName}.conf"
-	return strings.ReplaceAll(scriptTpl, "${fileName}", fileName)
+	scriptTpl := "openssl req -x509 -newkey rsa:2048 -keyout ${file}.key -out ${file}.crt -days 3650 -nodes -config ${file}.conf"
+	return strings.ReplaceAll(scriptTpl, "${file}", fmt.Sprintf("%s/%s", define.APP_DIR, fileName))
 }
 
 func TryAdjustPermissions() {
@@ -60,6 +64,6 @@ func TryAdjustPermissions() {
 	}
 	fn.Execute(`addgroup -g ` + define.APP_GID + ` ` + define.APP_USER)
 	fn.Execute(`adduser -g "" -G ` + define.APP_USER + ` -H -D -u ` + define.APP_UID + ` ` + define.APP_USER)
-	fn.Execute(`chown -R ` + define.APP_USER + `:` + define.APP_USER + ` ./ssl`)
-	fn.Execute(`chmod -R a+r ./ssl`)
+	fn.Execute(`chown -R ` + define.APP_USER + `:` + define.APP_USER + ` ` + define.APP_DIR)
+	fn.Execute(`chmod -R a+r ` + define.APP_DIR)
 }

@@ -203,3 +203,53 @@ func TestUpdateDomainOption(t *testing.T) {
 
 	os.Setenv(cmd.ENV_KEY_DOMAINS, "")
 }
+
+func TestSantizeDirPath(t *testing.T) {
+	// env: empty, args: "", default: define.DEFAULT_DIR
+	ret := cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "", define.DEFAULT_DIR)
+	if ret != define.DEFAULT_DIR {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "/aa", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "/aa", define.DEFAULT_DIR)
+	if ret != "aa" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "./aaa", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "./aaa", define.DEFAULT_DIR)
+	if ret != "aaa" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "../aaa", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "../aaa", define.DEFAULT_DIR)
+	if ret != "aaa" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "....//abc", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "....//abc", define.DEFAULT_DIR)
+	if ret != "abc" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "abcd/abc", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "abcd/abc", define.DEFAULT_DIR)
+	if ret != "abcd/abc" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "././././abcd", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "././././abcd", define.DEFAULT_DIR)
+	if ret != "abcd" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+
+	// env: empty, args: "...../aaa/a././aa", default: define.DEFAULT_DIR
+	ret = cmd.SantizeDirPath(cmd.ENV_KEY_DIR, "...../aaa/a././aa", define.DEFAULT_DIR)
+	if ret != "aaa/aaa" {
+		t.Fatal("test SantizeDirPath failed")
+	}
+}
