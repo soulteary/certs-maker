@@ -19,17 +19,6 @@ func init() {
 	os.MkdirAll(prepare, os.ModePerm)
 }
 
-const (
-	DEFAULT_COUNTRY             = "CN"                               // Country Name
-	DEFAULT_STATE               = "BJ"                               // State Or Province Name
-	DEFAULT_LOCALITY            = "HD"                               // Locality Name
-	DEFAULT_ORGANIZATION        = "Lab"                              // Organization Name
-	DEFAULT_ORGANIZATIONAL_UNIT = "Dev"                              // Organizational Unit Name
-	DEFAULT_COMMON_NAME         = "Hello World"                      // Common Name
-	DEFAULT_DOMAINS             = "lab.com,*.lab.com,*.data.lab.com" // Domains
-	DEFAULT_FORK8S              = "OFF"                              // Certs For K8S
-)
-
 var Version = "dev"
 
 func verifyCountry(input string) bool {
@@ -67,62 +56,62 @@ func createCertConfig(country string, state string, locality string, organizatio
 		if verifyCountry(country) {
 			cert.Country = strings.ToUpper(country)
 		} else {
-			fmt.Println("wrong country name, set to default value:", DEFAULT_COUNTRY)
+			fmt.Println("wrong country name, set to default value:", define.DEFAULT_COUNTRY)
 		}
 	} else {
-		cert.Country = DEFAULT_COUNTRY
+		cert.Country = define.DEFAULT_COUNTRY
 	}
 
 	state = strings.TrimSpace(state)
 	if len(state) > 0 {
 		cert.State = strings.ToUpper(state)
 	} else {
-		cert.State = DEFAULT_STATE
+		cert.State = define.DEFAULT_STATE
 	}
 
 	locality = strings.TrimSpace(locality)
 	if len(locality) > 0 {
 		cert.Locality = strings.ToUpper(locality)
 	} else {
-		cert.Locality = DEFAULT_LOCALITY
+		cert.Locality = define.DEFAULT_LOCALITY
 	}
 
 	organization = strings.TrimSpace(organization)
 	if len(organization) > 0 {
 		cert.Organization = organization
 	} else {
-		cert.Organization = DEFAULT_ORGANIZATION
+		cert.Organization = define.DEFAULT_ORGANIZATION
 	}
 
 	organizationalUnit = strings.TrimSpace(organizationalUnit)
 	if len(organization) > 0 {
 		cert.OrganizationalUnit = organizationalUnit
 	} else {
-		cert.OrganizationalUnit = DEFAULT_ORGANIZATIONAL_UNIT
+		cert.OrganizationalUnit = define.DEFAULT_ORGANIZATIONAL_UNIT
 	}
 
 	commonName = strings.TrimSpace(commonName)
 	if len(commonName) > 0 {
 		cert.CommonName = commonName
 	} else {
-		cert.CommonName = DEFAULT_COMMON_NAME
+		cert.CommonName = define.DEFAULT_COMMON_NAME
 	}
 
 	domainsInput := strings.TrimSpace(domains)
 	if len(domainsInput) > 0 {
 		userDomains := getDomains(domainsInput)
 		if len(userDomains) == 0 {
-			userDomains = getDomains(DEFAULT_DOMAINS)
-			fmt.Println("wrong domains, set to default value:", DEFAULT_DOMAINS)
+			userDomains = getDomains(define.DEFAULT_DOMAINS)
+			fmt.Println("wrong domains, set to default value:", define.DEFAULT_DOMAINS)
 		}
 		cert.Domains = userDomains
 	} else {
-		cert.Domains = getDomains(DEFAULT_DOMAINS)
+		cert.Domains = getDomains(define.DEFAULT_DOMAINS)
 	}
 
 	k8s := strings.TrimSpace(forK8S)
 	if k8s == "" {
-		cert.ForK8S = DEFAULT_FORK8S
+		cert.ForK8S = define.DEFAULT_FORK8S
 	} else {
 		k8s = strings.ToUpper(k8s)
 		if k8s == "ON" || k8s == "1" || k8s == "TRUE" {
@@ -162,28 +151,28 @@ func parseEnvInputs() (cert define.CERT) {
 
 func parseCliInputs() (cert define.CERT) {
 	var country string
-	flag.StringVar(&country, "CERT_C", DEFAULT_COUNTRY, "Country Name")
+	flag.StringVar(&country, "CERT_C", define.DEFAULT_COUNTRY, "Country Name")
 
 	var state string
-	flag.StringVar(&state, "CERT_ST", DEFAULT_STATE, "State Or Province Name")
+	flag.StringVar(&state, "CERT_ST", define.DEFAULT_STATE, "State Or Province Name")
 
 	var locality string
-	flag.StringVar(&locality, "CERT_L", DEFAULT_LOCALITY, "Locality Name")
+	flag.StringVar(&locality, "CERT_L", define.DEFAULT_LOCALITY, "Locality Name")
 
 	var organization string
-	flag.StringVar(&organization, "CERT_O", DEFAULT_ORGANIZATION, "Organization Name")
+	flag.StringVar(&organization, "CERT_O", define.DEFAULT_ORGANIZATION, "Organization Name")
 
 	var organizationalUnit string
-	flag.StringVar(&organizationalUnit, "CERT_OU", DEFAULT_ORGANIZATIONAL_UNIT, "Organizational Unit Name")
+	flag.StringVar(&organizationalUnit, "CERT_OU", define.DEFAULT_ORGANIZATIONAL_UNIT, "Organizational Unit Name")
 
 	var commonName string
-	flag.StringVar(&commonName, "CERT_CN", DEFAULT_COMMON_NAME, "Common Name")
+	flag.StringVar(&commonName, "CERT_CN", define.DEFAULT_COMMON_NAME, "Common Name")
 
 	var domains string
-	flag.StringVar(&domains, "CERT_DNS", DEFAULT_DOMAINS, "Domains")
+	flag.StringVar(&domains, "CERT_DNS", define.DEFAULT_DOMAINS, "Domains")
 
 	var forK8S string
-	flag.StringVar(&forK8S, "FOR_K8S", DEFAULT_FORK8S, "FOR K8S")
+	flag.StringVar(&forK8S, "FOR_K8S", define.DEFAULT_FORK8S, "FOR K8S")
 
 	var user string
 	flag.StringVar(&user, "USER", "", "File Owner Username")
@@ -203,25 +192,25 @@ func mergeUserInputs() define.CERT {
 	base := parseEnvInputs()
 	cli := parseCliInputs()
 
-	if cli.Country != DEFAULT_COUNTRY {
+	if cli.Country != define.DEFAULT_COUNTRY {
 		base.Country = cli.Country
 	}
-	if cli.State != DEFAULT_STATE {
+	if cli.State != define.DEFAULT_STATE {
 		base.State = cli.State
 	}
-	if cli.Locality != DEFAULT_LOCALITY {
+	if cli.Locality != define.DEFAULT_LOCALITY {
 		base.Locality = cli.Locality
 	}
-	if cli.Organization != DEFAULT_ORGANIZATION {
+	if cli.Organization != define.DEFAULT_ORGANIZATION {
 		base.Organization = cli.Organization
 	}
-	if cli.OrganizationalUnit != DEFAULT_ORGANIZATIONAL_UNIT {
+	if cli.OrganizationalUnit != define.DEFAULT_ORGANIZATIONAL_UNIT {
 		base.OrganizationalUnit = cli.OrganizationalUnit
 	}
-	if cli.CommonName != DEFAULT_COMMON_NAME {
+	if cli.CommonName != define.DEFAULT_COMMON_NAME {
 		base.CommonName = cli.CommonName
 	}
-	if !reflect.DeepEqual(cli.Domains, getDomains(DEFAULT_DOMAINS)) {
+	if !reflect.DeepEqual(cli.Domains, getDomains(define.DEFAULT_DOMAINS)) {
 		base.Domains = cli.Domains
 	}
 	if cli.ForK8S != base.ForK8S {
