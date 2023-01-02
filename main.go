@@ -11,5 +11,6 @@ import (
 func main() {
 	fmt.Printf("running soulteary/certs-maker %s\n", version.Version)
 	cmd.ApplyFlags()
+	// TODO print all flags
 	generator.Generate()
 }

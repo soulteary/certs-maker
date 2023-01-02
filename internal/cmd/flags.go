@@ -21,7 +21,7 @@ func ParseFlags() (appFlags AppFlags) {
 	flag.StringVar(&appFlags.User, ENV_KEY_USER, define.DEFAULT_USER, CLI_DESC_USER)
 	flag.StringVar(&appFlags.UID, ENV_KEY_UID, define.DEFAULT_UID, CLI_DESC_UID)
 	flag.StringVar(&appFlags.GID, ENV_KEY_GID, define.APP_GID, CLI_DESC_GID)
-	flag.StringVar(&appFlags.Dir, ENV_KEY_DIR, define.APP_DIR, CLI_DESC_DIR)
+	flag.StringVar(&appFlags.Dir, ENV_KEY_OUTPUT_DIR, define.APP_OUTPUT_DIR, CLI_DESC_OUTPUT_DIR)
 
 	flag.Parse()
 	return appFlags
@@ -38,8 +38,8 @@ func ApplyFlags() {
 	define.CERT_COMMON_NAME = UpdateStringOption(ENV_KEY_COMMON_NAME, args.CommonName, define.DEFAULT_COMMON_NAME)
 	define.CERT_DOMAINS = UpdateDomainOption(ENV_KEY_DOMAINS, args.Domains, define.DEFAULT_DOMAINS)
 	define.APP_FOR_K8S = UpdateBoolOption(ENV_KEY_FOR_K8S, args.ForK8s, define.DEFAULT_FOR_K8S)
-	define.APP_DIR = SantizeDirPath(ENV_KEY_DIR, args.Dir, define.DEFAULT_DIR)
-	os.MkdirAll(define.APP_DIR, os.ModePerm)
+	define.APP_OUTPUT_DIR = SantizeDirPath(ENV_KEY_OUTPUT_DIR, args.Dir, define.DEFAULT_DIR)
+	os.MkdirAll(define.APP_OUTPUT_DIR, os.ModePerm)
 
 	user := UpdateStringOption(ENV_KEY_USER, args.User, define.DEFAULT_USER)
 	uid := UpdateStringOption(ENV_KEY_UID, args.UID, define.DEFAULT_UID)

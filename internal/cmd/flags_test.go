@@ -63,7 +63,7 @@ func TestApplyFlags(t *testing.T) {
 		t.Fatal("test flag parse failed")
 	}
 
-	if define.APP_DIR != define.DEFAULT_DIR {
+	if define.APP_OUTPUT_DIR != define.DEFAULT_DIR {
 		t.Fatal("test flag parse failed")
 	}
 }

@@ -15,11 +15,11 @@ const (
 	ENV_KEY_COMMON_NAME       = "CERT_CN"
 	ENV_KEY_DOMAINS           = "CERT_DNS"
 
-	ENV_KEY_FOR_K8S = "FOR_K8S"
-	ENV_KEY_USER    = "USER"
-	ENV_KEY_UID     = "UID"
-	ENV_KEY_GID     = "GID"
-	ENV_KEY_DIR     = "DIR"
+	ENV_KEY_FOR_K8S    = "FOR_K8S"
+	ENV_KEY_USER       = "USER"
+	ENV_KEY_UID        = "UID"
+	ENV_KEY_GID        = "GID"
+	ENV_KEY_OUTPUT_DIR = "DIR"
 )
 
 var (
@@ -34,7 +34,7 @@ var (
 	CLI_DESC_USER              = fmt.Sprintf("File Owner User, env: `%s`, default: `%s`", ENV_KEY_USER, define.DEFAULT_USER)
 	CLI_DESC_UID               = fmt.Sprintf("File Owner UID, env: `%s`, default: `%s`", ENV_KEY_UID, define.DEFAULT_UID)
 	CLI_DESC_GID               = fmt.Sprintf("File Owner GID, env: `%s`, default: `%s`", ENV_KEY_GID, define.DEFAULT_GID)
-	CLI_DESC_DIR               = fmt.Sprintf("Certs Dir, env: `%s`, default: `%s`", ENV_KEY_DIR, define.DEFAULT_DIR)
+	CLI_DESC_OUTPUT_DIR        = fmt.Sprintf("Certs Dir, env: `%s`, default: `%s`", ENV_KEY_OUTPUT_DIR, define.DEFAULT_DIR)
 )
 
 type AppFlags struct {

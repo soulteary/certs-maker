@@ -44,16 +44,16 @@ func GenerateConfFile() string {
 
 	fileName := fn.GetDomainName(define.CERT_DOMAINS[0])
 	if !define.APP_FOR_K8S {
-		confPath := filepath.Join(define.APP_DIR, fileName+".conf")
+		confPath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
 		os.WriteFile(confPath, []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS+"\n"+certDomains), 0644)
 	} else {
 		fileName = fileName + ".k8s"
-		confPath := filepath.Join(define.APP_DIR, fileName+".conf")
+		confPath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
 		os.WriteFile(confPath, []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS_K8S+"\n"+certDomains), 0644)
 	}
 
 	scriptTpl := "openssl req -x509 -newkey rsa:2048 -keyout ${file}.key -out ${file}.crt -days 3650 -nodes -config ${file}.conf"
-	return strings.ReplaceAll(scriptTpl, "${file}", fmt.Sprintf("%s/%s", define.APP_DIR, fileName))
+	return strings.ReplaceAll(scriptTpl, "${file}", fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, fileName))
 }
 
 func TryAdjustPermissions() {
@@ -62,8 +62,11 @@ func TryAdjustPermissions() {
 		define.APP_GID == "" {
 		return
 	}
-	fn.Execute(`addgroup -g ` + define.APP_GID + ` ` + define.APP_USER)
-	fn.Execute(`adduser -g "" -G ` + define.APP_USER + ` -H -D -u ` + define.APP_UID + ` ` + define.APP_USER)
-	fn.Execute(`chown -R ` + define.APP_USER + `:` + define.APP_USER + ` ` + define.APP_DIR)
-	fn.Execute(`chmod -R a+r ` + define.APP_DIR)
+
+	cmdCreateGroup := fmt.Sprintf(`addgroup -g %s %s`, define.APP_GID, define.APP_USER)
+	cmdCreateUser := fmt.Sprintf(`adduser -g "" -G %s -H -D -u %s %s`, define.APP_USER, define.APP_UID, define.APP_USER)
+	cmdChangeOwner := fmt.Sprintf(`chown -R %s:%s %s`, define.APP_USER, define.APP_USER, define.APP_OUTPUT_DIR)
+	cmdChangeMod := fmt.Sprintf(`chmod -R a+r %s`, define.APP_OUTPUT_DIR)
+
+	fn.Execute(fmt.Sprintf("%s\n%s\n%s\n%s\n", cmdCreateGroup, cmdCreateUser, cmdChangeOwner, cmdChangeMod))
 }

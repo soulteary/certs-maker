@@ -25,9 +25,9 @@ var (
 	CERT_COMMON_NAME         string   // Common Name
 	CERT_DOMAINS             []string // Domains
 
-	APP_FOR_K8S bool // Certs For K8S
-	APP_USER    string
-	APP_UID     string
-	APP_GID     string
-	APP_DIR     string
+	APP_FOR_K8S    bool // Certs For K8S
+	APP_USER       string
+	APP_UID        string
+	APP_GID        string
+	APP_OUTPUT_DIR string
 )
