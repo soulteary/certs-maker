@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"cert-maker/internal/define"
 	"flag"
 	"fmt"
 	"os"
@@ -16,20 +17,6 @@ import (
 func init() {
 	prepare := filepath.Join(".", "ssl")
 	os.MkdirAll(prepare, os.ModePerm)
-}
-
-type CERT struct {
-	Country            string
-	State              string
-	Locality           string
-	Organization       string
-	OrganizationalUnit string
-	CommonName         string
-	Domains            []string
-	ForK8S             string
-	OwnUser            string
-	OwnUID             string
-	OwnGID             string
 }
 
 const (
@@ -74,7 +61,7 @@ func getRootDomain(input string) string {
 	return file
 }
 
-func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string, forK8S string, user string, uid string, gid string) (cert CERT) {
+func createCertConfig(country string, state string, locality string, organization string, organizationalUnit string, commonName string, domains string, forK8S string, user string, uid string, gid string) (cert define.CERT) {
 	country = strings.TrimSpace(country)
 	if len(country) > 0 {
 		if verifyCountry(country) {
@@ -157,7 +144,7 @@ func createCertConfig(country string, state string, locality string, organizatio
 	return cert
 }
 
-func parseEnvInputs() (cert CERT) {
+func parseEnvInputs() (cert define.CERT) {
 	country := os.Getenv("CERT_C")
 	state := os.Getenv("CERT_ST")
 	locality := os.Getenv("CERT_L")
@@ -173,7 +160,7 @@ func parseEnvInputs() (cert CERT) {
 	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S, user, uid, gid)
 }
 
-func parseCliInputs() (cert CERT) {
+func parseCliInputs() (cert define.CERT) {
 	var country string
 	flag.StringVar(&country, "CERT_C", DEFAULT_COUNTRY, "Country Name")
 
@@ -212,7 +199,7 @@ func parseCliInputs() (cert CERT) {
 	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S, user, uid, gid)
 }
 
-func mergeUserInputs() CERT {
+func mergeUserInputs() define.CERT {
 	base := parseEnvInputs()
 	cli := parseCliInputs()
 
@@ -263,7 +250,7 @@ func uniq(s []string) []string {
 	return l
 }
 
-func generateConfFile(cert CERT) string {
+func generateConfFile(cert define.CERT) string {
 
 	const certBase = `
 [req]
@@ -336,7 +323,7 @@ subjectAltName = @alt_names
 	return strings.ReplaceAll(scriptTpl, "${fileName}", fileName)
 }
 
-func tryAdjustPermissions(cert CERT) {
+func tryAdjustPermissions(cert define.CERT) {
 	if cert.OwnUser == "" ||
 		cert.OwnUID == "" ||
 		cert.OwnGID == "" {
