@@ -2,3 +2,4 @@ ssl
 generate.sh
 certs
 .DS_Store
+coverage.out
