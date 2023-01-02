@@ -31,3 +31,5 @@ var (
 	APP_GID        string
 	APP_OUTPUT_DIR string
 )
+
+const DEFAULT_MODE = 0644

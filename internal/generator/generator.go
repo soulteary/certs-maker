@@ -17,8 +17,8 @@ func Generate() {
 	TryAdjustPermissions()
 }
 
-func GenerateConfFile() string {
-	certInfo := strings.Join(
+func GetCertSettings() string {
+	return strings.Join(
 		[]string{
 			"[cert_distinguished_name]",
 			"C  = " + define.CERT_COUNTRY,
@@ -29,8 +29,10 @@ func GenerateConfFile() string {
 			"CN = " + define.CERT_COMMON_NAME,
 		}, "\n",
 	)
+}
 
-	if define.APP_FOR_K8S {
+func GetCertDomains(isK8s bool) string {
+	if isK8s {
 		define.CERT_DOMAINS = append(define.CERT_DOMAINS, "*", "localhost")
 		define.CERT_DOMAINS = fn.GetUniqDomains(define.CERT_DOMAINS)
 	}
@@ -40,17 +42,38 @@ func GenerateConfFile() string {
 		id := strconv.Itoa(idx + 1)
 		domains = append(domains, "DNS."+id+" = "+domain)
 	}
-	certDomains := strings.Join(domains, "\n")
+	return strings.Join(domains, "\n")
+}
 
-	fileName := fn.GetDomainName(define.CERT_DOMAINS[0])
-	if !define.APP_FOR_K8S {
-		confPath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
-		os.WriteFile(confPath, []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS+"\n"+certDomains), 0644)
+func GetCertFullConfig(info string, domain string, isK8s bool) []byte {
+	if !isK8s {
+		return []byte(
+			fmt.Sprintf("%s\n%s\n%s\n%s\n", define.CERT_BASE_INFO, info, define.CERT_EXTENSIONS, domain),
+		)
 	} else {
-		fileName = fileName + ".k8s"
-		confPath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
-		os.WriteFile(confPath, []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS_K8S+"\n"+certDomains), 0644)
+		return []byte(
+			fmt.Sprintf("%s\n%s\n%s\n%s\n", define.CERT_BASE_INFO, info, define.CERT_EXTENSIONS_K8S, domain),
+		)
 	}
+}
+
+func GetCertFileNameByDomain(domain string, isK8s bool) string {
+	s := fn.GetDomainName(domain)
+	if isK8s {
+		s += ".k8s"
+	}
+	return s
+}
+
+func GenerateConfFile() string {
+	certInfo := GetCertSettings()
+	certDomains := GetCertDomains(define.APP_FOR_K8S)
+
+	fileName := GetCertFileNameByDomain(define.CERT_DOMAINS[0], define.APP_FOR_K8S)
+	confPath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
+
+	content := GetCertFullConfig(certInfo, certDomains, define.APP_FOR_K8S)
+	os.WriteFile(confPath, content, define.DEFAULT_MODE)
 
 	scriptTpl := "openssl req -x509 -newkey rsa:2048 -keyout ${file}.key -out ${file}.crt -days 3650 -nodes -config ${file}.conf"
 	return strings.ReplaceAll(scriptTpl, "${file}", fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, fileName))
