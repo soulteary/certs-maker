@@ -9,6 +9,12 @@ import (
 	"github.com/soulteary/certs-maker/internal/fn"
 )
 
+func Generate() {
+	shell := GenerateConfFile()
+	fn.Execute(shell)
+	TryAdjustPermissions()
+}
+
 func GenerateConfFile() string {
 	certInfo := strings.Join(
 		[]string{
@@ -25,7 +31,7 @@ func GenerateConfFile() string {
 	if define.APP_FOR_K8S {
 		define.CERT_DOMAINS = append(define.CERT_DOMAINS, "*")
 		define.CERT_DOMAINS = append(define.CERT_DOMAINS, "localhost")
-		define.CERT_DOMAINS = fn.Uniq(define.CERT_DOMAINS)
+		define.CERT_DOMAINS = fn.GetUniqDomains(define.CERT_DOMAINS)
 	}
 
 	domains := []string{"[alt_names]"}
@@ -35,7 +41,7 @@ func GenerateConfFile() string {
 	}
 	certDomains := strings.Join(domains, "\n")
 
-	fileName := fn.GetRootDomain(define.CERT_DOMAINS[0])
+	fileName := fn.GetDomainName(define.CERT_DOMAINS[0])
 	if !define.APP_FOR_K8S {
 		os.WriteFile("./ssl/"+fileName+".conf", []byte(define.CERT_BASE_INFO+"\n"+certInfo+"\n"+define.CERT_EXTENSIONS+"\n"+certDomains), 0644)
 	} else {

@@ -45,7 +45,7 @@ func TestApplyFlags(t *testing.T) {
 		t.Fatal("test flag parse failed")
 	}
 
-	if !reflect.DeepEqual(define.CERT_DOMAINS, fn.GetDomains(define.DEFAULT_DOMAINS)) {
+	if !reflect.DeepEqual(define.CERT_DOMAINS, fn.GetDomainsByString(define.DEFAULT_DOMAINS)) {
 		t.Fatal("test flag parse failed")
 	}
 

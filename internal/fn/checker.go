@@ -19,7 +19,7 @@ func IsNotEmptyAndNotDefaultString(value string, defaults string) bool {
 }
 
 func IsDomainListStringMatch(value []string, defaults string) bool {
-	return reflect.DeepEqual(value, GetDomains(defaults))
+	return reflect.DeepEqual(value, GetDomainsByString(defaults))
 }
 
 func IsVaildCountry(input string) bool {
