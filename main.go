@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -99,30 +97,16 @@ func tryAdjustPermissions(cert define.CERT) {
 		cert.OwnGID == "" {
 		return
 	}
-	execute(`addgroup -g ` + cert.OwnGID + ` ` + cert.OwnUser)
-	execute(`adduser -g "" -G ` + cert.OwnUser + ` -H -D -u ` + cert.OwnUID + ` ` + cert.OwnUser)
-	execute(`chown -R ` + cert.OwnUser + `:` + cert.OwnUser + ` ./ssl`)
-	execute(`chmod -R a+r ./ssl`)
-}
-
-func execute(command string) {
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd := exec.Command("sh", "-c", command)
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(stdout.String())
-	}
+	fn.Execute(`addgroup -g ` + cert.OwnGID + ` ` + cert.OwnUser)
+	fn.Execute(`adduser -g "" -G ` + cert.OwnUser + ` -H -D -u ` + cert.OwnUID + ` ` + cert.OwnUser)
+	fn.Execute(`chown -R ` + cert.OwnUser + `:` + cert.OwnUser + ` ./ssl`)
+	fn.Execute(`chmod -R a+r ./ssl`)
 }
 
 func main() {
 	fmt.Printf("running soulteary/certs-maker %s\n", version.Version)
 	config := cmd.MergeUserInputs()
 	shell := generateConfFile(config)
-	execute(shell)
+	fn.Execute(shell)
 	tryAdjustPermissions(config)
 }
