@@ -253,3 +253,79 @@ func TestSantizeDirPath(t *testing.T) {
 		t.Fatal("test SantizeDirPath failed")
 	}
 }
+
+func TestUpdateK8sOption(t *testing.T) {
+
+	// env: empty, args: false, default: false
+	ret := cmd.UpdateK8sOption("TEST_KEY", "false", "false")
+	if ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: empty, args: false, default: true
+	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "true")
+	if ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: empty, args: true, default: true
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "true")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: empty, args: false, default: true
+	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "true")
+	if ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+
+	// env: on, args: false, default: false
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "false")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: on, args: true, default: false
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: on, args: true, default: true
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "true")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: on, args: true, default: false
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+
+	// env: off, args: false, default: false
+	os.Setenv("TEST_KEY", "off")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "false")
+	if ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: off, args: true, default: false
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: off, args: true, default: true
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "true")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+	// env: on, args: true, default: false
+	os.Setenv("TEST_KEY", "on")
+	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	if !ret {
+		t.Fatal("UpdateK8sOption failed")
+	}
+
+	os.Setenv("TEST_KEY", "")
+}

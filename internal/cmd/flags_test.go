@@ -49,7 +49,7 @@ func TestApplyFlags(t *testing.T) {
 		t.Fatal("test flag parse failed")
 	}
 
-	if define.APP_FOR_K8S != define.DEFAULT_FOR_K8S {
+	if define.APP_FOR_K8S != fn.IsBoolString(define.DEFAULT_FOR_K8S) {
 		t.Fatal("test flag parse failed")
 	}
 

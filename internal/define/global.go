@@ -9,7 +9,7 @@ const (
 	DEFAULT_COMMON_NAME         = "Hello World"                      // Common Name
 	DEFAULT_DOMAINS             = "lab.com,*.lab.com,*.data.lab.com" // Domains
 
-	DEFAULT_FOR_K8S = false // Certs For K8S
+	DEFAULT_FOR_K8S = "off" // Certs For K8S
 	DEFAULT_USER    = ""
 	DEFAULT_UID     = ""
 	DEFAULT_GID     = ""

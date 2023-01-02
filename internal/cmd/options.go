@@ -34,6 +34,19 @@ func UpdateBoolOption(key string, args bool, defaults bool) bool {
 	return value
 }
 
+func UpdateK8sOption(key string, args string, defaults string) bool {
+	env := os.Getenv(key)
+	def := fn.IsBoolString(defaults)
+	value := def
+	if env != "" {
+		value = fn.IsBoolString(env)
+	}
+	if fn.IsBoolString(args) != def {
+		value = fn.IsBoolString(args)
+	}
+	return value
+}
+
 func UpdateCountryOption(key string, args string, defaults string) string {
 	value := UpdateStringOption(key, args, defaults)
 	if fn.IsVaildCountry(value) {

@@ -46,9 +46,9 @@ type AppFlags struct {
 	CommonName         string
 	Domains            string
 
-	ForK8s bool
-	User   string
-	UID    string
-	GID    string
-	Dir    string
+	ForK8s    string
+	User      string
+	UID       string
+	GID       string
+	OutputDir string
 }
