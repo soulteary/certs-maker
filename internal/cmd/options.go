@@ -42,8 +42,5 @@ func UpdateCountryOption(key string, args string, defaults string) string {
 func UpdateDomainOption(key string, args string, defaults string) []string {
 	value := UpdateStringOption(key, args, defaults)
 	domains := fn.GetDomains(value)
-	if len(domains) == 0 {
-		return fn.GetDomains(defaults)
-	}
 	return domains
 }

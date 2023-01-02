@@ -25,3 +25,12 @@ func IsDomainListStringMatch(value []string, defaults string) bool {
 func IsVaildCountry(input string) bool {
 	return regexp.MustCompile(`^\w{2}$`).FindString(input) != ""
 }
+
+func IsStrInArray(arr []string, s string) bool {
+	for _, a := range arr {
+		if a == s {
+			return true
+		}
+	}
+	return false
+}

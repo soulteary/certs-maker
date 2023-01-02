@@ -6,6 +6,7 @@ import (
 
 	"github.com/soulteary/certs-maker/internal/cmd"
 	"github.com/soulteary/certs-maker/internal/define"
+	"github.com/soulteary/certs-maker/internal/fn"
 )
 
 func TestUpdateBoolOption(t *testing.T) {
@@ -161,4 +162,44 @@ func TestUpdateCountryOption(t *testing.T) {
 	if ret != "XX" {
 		t.Fatal("UpdateCountryOption failed")
 	}
+	os.Setenv(cmd.ENV_KEY_COUNTRY, "")
+}
+
+func TestUpdateDomainOption(t *testing.T) {
+	// env: empty, args: "", default: define.DEFAULT_DOMAINS
+	ret := cmd.UpdateDomainOption(cmd.ENV_KEY_DOMAINS, "", define.DEFAULT_DOMAINS)
+	if !fn.IsDomainListStringMatch(ret, define.DEFAULT_DOMAINS) {
+		t.Fatal("UpdateDomainOption failed")
+	}
+
+	// env: empty, args: "a.com,b.com", default: define.DEFAULT_DOMAINS
+	ret = cmd.UpdateDomainOption(cmd.ENV_KEY_DOMAINS, "a.com,b.com", define.DEFAULT_DOMAINS)
+	if fn.IsDomainListStringMatch(ret, define.DEFAULT_DOMAINS) {
+		t.Fatal("UpdateDomainOption failed")
+	}
+	if !fn.IsStrInArray(ret, "a.com") || !fn.IsStrInArray(ret, "b.com") {
+		t.Fatal("UpdateDomainOption failed")
+	}
+
+	// env: "c.com", args: "", default: define.DEFAULT_DOMAINS
+	os.Setenv(cmd.ENV_KEY_DOMAINS, "c.com")
+	ret = cmd.UpdateDomainOption(cmd.ENV_KEY_DOMAINS, "", define.DEFAULT_DOMAINS)
+	if fn.IsDomainListStringMatch(ret, define.DEFAULT_DOMAINS) {
+		t.Fatal("UpdateDomainOption failed")
+	}
+	if !fn.IsStrInArray(ret, "c.com") {
+		t.Fatal("UpdateDomainOption failed")
+	}
+
+	// env: "c.com", args: "a.com", default: define.DEFAULT_DOMAINS
+	os.Setenv(cmd.ENV_KEY_DOMAINS, "c.com")
+	ret = cmd.UpdateDomainOption(cmd.ENV_KEY_DOMAINS, "a.com", define.DEFAULT_DOMAINS)
+	if fn.IsDomainListStringMatch(ret, define.DEFAULT_DOMAINS) {
+		t.Fatal("UpdateDomainOption failed")
+	}
+	if !fn.IsStrInArray(ret, "a.com") {
+		t.Fatal("UpdateDomainOption failed")
+	}
+
+	os.Setenv(cmd.ENV_KEY_DOMAINS, "")
 }
