@@ -1,15 +1,9 @@
 package cmd
 
-const (
-	DEFAULT_COUNTRY             = "CN"                               // Country Name
-	DEFAULT_STATE               = "BJ"                               // State Or Province Name
-	DEFAULT_LOCALITY            = "HD"                               // Locality Name
-	DEFAULT_ORGANIZATION        = "Lab"                              // Organization Name
-	DEFAULT_ORGANIZATIONAL_UNIT = "Dev"                              // Organizational Unit Name
-	DEFAULT_COMMON_NAME         = "Hello World"                      // Common Name
-	DEFAULT_DOMAINS             = "lab.com,*.lab.com,*.data.lab.com" // Domains
+import (
+	"fmt"
 
-	DEFAULT_FORK8S = "OFF" // Certs For K8S
+	"github.com/soulteary/certs-maker/internal/define"
 )
 
 const (
@@ -26,3 +20,32 @@ const (
 	ENV_KEY_UID     = "UID"
 	ENV_KEY_GID     = "GID"
 )
+
+var (
+	CLI_DESC_COUNTRY           = fmt.Sprintf("Country Name, env: `%s`, default: `%s`", ENV_KEY_COUNTRY, define.DEFAULT_COUNTRY)
+	CLI_DESC_STATE             = fmt.Sprintf("State Or Province Name, env: `%s`, default: `%s`", ENV_KEY_STATE, define.DEFAULT_STATE)
+	CLI_DESC_LOCALITY          = fmt.Sprintf("Locality Name, env: `%s`, default: `%s`", ENV_KEY_LOCALITY, define.DEFAULT_LOCALITY)
+	CLI_DESC_ORGANIZATION      = fmt.Sprintf("Organization Name, env: `%s`, default: `%s`", ENV_KEY_ORGANIZATION, define.DEFAULT_ORGANIZATION)
+	CLI_DESC_ORGANIZATION_UNIT = fmt.Sprintf("Organizational Unit Name, env: `%s`, default: `%s`", ENV_KEY_ORGANIZATION_UNIT, define.DEFAULT_ORGANIZATIONAL_UNIT)
+	CLI_DESC_COMMON_NAME       = fmt.Sprintf("Common Name, env: `%s`, default: `%s`", ENV_KEY_COMMON_NAME, define.DEFAULT_COMMON_NAME)
+	CLI_DESC_DOMAINS           = fmt.Sprintf("Domains, env: `%s`, default: `%s`", ENV_KEY_DOMAINS, define.DEFAULT_DOMAINS)
+	CLI_DESC_FOR_K8S           = fmt.Sprintf("Issue for K8s, env: `%s`, default: `%v`", ENV_KEY_FOR_K8S, define.DEFAULT_FOR_K8S)
+	CLI_DESC_USER              = fmt.Sprintf("File Owner User, env: `%s`, default: `%s`", ENV_KEY_USER, define.DEFAULT_USER)
+	CLI_DESC_UID               = fmt.Sprintf("File Owner UID, env: `%s`, default: `%s`", ENV_KEY_UID, define.DEFAULT_UID)
+	CLI_DESC_GID               = fmt.Sprintf("File Owner GID, env: `%s`, default: `%s`", ENV_KEY_GID, define.DEFAULT_GID)
+)
+
+type AppFlags struct {
+	Country            string
+	State              string
+	Locality           string
+	Organization       string
+	OrganizationalUnit string
+	CommonName         string
+	Domains            string
+	ForK8s             bool
+
+	User string
+	UID  string
+	GID  string
+}
