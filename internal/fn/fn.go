@@ -20,12 +20,6 @@ func Uniq(s []string) []string {
 	return l
 }
 
-func VerifyCountry(input string) bool {
-	var re = regexp.MustCompile(`^\w{2}$`)
-	ret := re.FindString(input)
-	return ret != ""
-}
-
 func GetDomains(input string) (result []string) {
 	var re = regexp.MustCompile(`^([\.\w\*\-\_]+(\,)?){1,}$`)
 	if len(re.FindAllString(input, -1)) > 0 {
