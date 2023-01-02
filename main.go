@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"cert-maker/internal/define"
 	"flag"
 	"fmt"
 	"os"
@@ -12,14 +11,15 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+
+	"cert-maker/internal/define"
+	"cert-maker/internal/version"
 )
 
 func init() {
 	prepare := filepath.Join(".", "ssl")
 	os.MkdirAll(prepare, os.ModePerm)
 }
-
-var Version = "dev"
 
 func verifyCountry(input string) bool {
 	var re = regexp.MustCompile(`^\w{2}$`)
@@ -339,7 +339,7 @@ func execute(command string) {
 }
 
 func main() {
-	fmt.Printf("running soulteary/certs-maker %s\n", Version)
+	fmt.Printf("running soulteary/certs-maker %s\n", version.Version)
 	config := mergeUserInputs()
 	shell := generateConfFile(config)
 	execute(shell)
