@@ -2,6 +2,7 @@ package fn
 
 import (
 	"reflect"
+	"regexp"
 	"strings"
 )
 
@@ -19,4 +20,8 @@ func IsNotEmptyAndNotDefaultString(value string, defaults string) bool {
 
 func IsDomainListStringMatch(value []string, defaults string) bool {
 	return reflect.DeepEqual(value, GetDomains(defaults))
+}
+
+func IsVaildCountry(input string) bool {
+	return regexp.MustCompile(`^\w{2}$`).FindString(input) != ""
 }

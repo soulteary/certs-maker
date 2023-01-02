@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"os"
-	"regexp"
 	"strings"
 
 	"github.com/soulteary/certs-maker/internal/fn"
@@ -34,9 +33,7 @@ func UpdateBoolOption(key string, args bool, defaults bool) bool {
 
 func UpdateCountryOption(key string, args string, defaults string) string {
 	value := UpdateStringOption(key, args, defaults)
-	var re = regexp.MustCompile(`^\w{2}$`)
-	ret := re.FindString(value)
-	if ret != "" {
+	if fn.IsVaildCountry(value) {
 		return strings.ToUpper(value)
 	}
 	return defaults
