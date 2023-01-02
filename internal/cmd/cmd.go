@@ -12,54 +12,54 @@ import (
 )
 
 func parseEnvInputs() (cert define.CERT) {
-	country := os.Getenv("CERT_C")
-	state := os.Getenv("CERT_ST")
-	locality := os.Getenv("CERT_L")
-	organization := os.Getenv("CERT_O")
-	organizationalUnit := os.Getenv("CERT_OU")
-	commonName := os.Getenv("CERT_CN")
-	domains := os.Getenv("CERT_DNS")
-	forK8S := os.Getenv("FOR_K8S")
-	user := os.Getenv("USER")
-	uid := os.Getenv("UID")
-	gid := os.Getenv("GID")
+	country := os.Getenv(define.ENV_KEY_COUNTRY)
+	state := os.Getenv(define.ENV_KEY_STATE)
+	locality := os.Getenv(define.ENV_KEY_LOCALITY)
+	organization := os.Getenv(define.ENV_KEY_ORGANIZATION)
+	organizationalUnit := os.Getenv(define.ENV_KEY_ORGANIZATION_UNIT)
+	commonName := os.Getenv(define.ENV_KEY_COMMON_NAME)
+	domains := os.Getenv(define.ENV_KEY_DOMAINS)
+	forK8S := os.Getenv(define.ENV_KEY_FOR_K8S)
+	user := os.Getenv(define.ENV_KEY_USER)
+	uid := os.Getenv(define.ENV_KEY_UID)
+	gid := os.Getenv(define.ENV_KEY_GID)
 
 	return createCertConfig(country, state, locality, organization, organizationalUnit, commonName, domains, forK8S, user, uid, gid)
 }
 
 func parseCliInputs() (cert define.CERT) {
 	var country string
-	flag.StringVar(&country, "CERT_C", define.DEFAULT_COUNTRY, "Country Name")
+	flag.StringVar(&country, define.ENV_KEY_COUNTRY, define.DEFAULT_COUNTRY, "Country Name")
 
 	var state string
-	flag.StringVar(&state, "CERT_ST", define.DEFAULT_STATE, "State Or Province Name")
+	flag.StringVar(&state, define.ENV_KEY_STATE, define.DEFAULT_STATE, "State Or Province Name")
 
 	var locality string
-	flag.StringVar(&locality, "CERT_L", define.DEFAULT_LOCALITY, "Locality Name")
+	flag.StringVar(&locality, define.ENV_KEY_LOCALITY, define.DEFAULT_LOCALITY, "Locality Name")
 
 	var organization string
-	flag.StringVar(&organization, "CERT_O", define.DEFAULT_ORGANIZATION, "Organization Name")
+	flag.StringVar(&organization, define.ENV_KEY_ORGANIZATION, define.DEFAULT_ORGANIZATION, "Organization Name")
 
 	var organizationalUnit string
-	flag.StringVar(&organizationalUnit, "CERT_OU", define.DEFAULT_ORGANIZATIONAL_UNIT, "Organizational Unit Name")
+	flag.StringVar(&organizationalUnit, define.ENV_KEY_ORGANIZATION_UNIT, define.DEFAULT_ORGANIZATIONAL_UNIT, "Organizational Unit Name")
 
 	var commonName string
-	flag.StringVar(&commonName, "CERT_CN", define.DEFAULT_COMMON_NAME, "Common Name")
+	flag.StringVar(&commonName, define.ENV_KEY_COMMON_NAME, define.DEFAULT_COMMON_NAME, "Common Name")
 
 	var domains string
-	flag.StringVar(&domains, "CERT_DNS", define.DEFAULT_DOMAINS, "Domains")
+	flag.StringVar(&domains, define.ENV_KEY_DOMAINS, define.DEFAULT_DOMAINS, "Domains")
 
 	var forK8S string
-	flag.StringVar(&forK8S, "FOR_K8S", define.DEFAULT_FORK8S, "FOR K8S")
+	flag.StringVar(&forK8S, define.ENV_KEY_FOR_K8S, define.DEFAULT_FORK8S, "FOR K8S")
 
 	var user string
-	flag.StringVar(&user, "USER", "", "File Owner Username")
+	flag.StringVar(&user, define.ENV_KEY_USER, "", "File Owner Username")
 
 	var uid string
-	flag.StringVar(&uid, "UID", "", "File Owner UID")
+	flag.StringVar(&uid, define.ENV_KEY_UID, "", "File Owner UID")
 
 	var gid string
-	flag.StringVar(&gid, "GID", "", "File Owner GID")
+	flag.StringVar(&gid, define.ENV_KEY_GID, "", "File Owner GID")
 
 	flag.Parse()
 
