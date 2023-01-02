@@ -40,6 +40,7 @@ func ApplyFlags() {
 	user := UpdateStringOption(ENV_KEY_USER, args.User, define.DEFAULT_USER)
 	uid := UpdateStringOption(ENV_KEY_UID, args.UID, define.DEFAULT_UID)
 	gid := UpdateStringOption(ENV_KEY_GID, args.GID, define.DEFAULT_GID)
+
 	if user != "" && uid != "" && gid != "" {
 		define.APP_USER = user
 		define.APP_UID = uid
