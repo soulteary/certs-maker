@@ -5,7 +5,7 @@ builds:
       env:
         - CGO_ENABLED=0
       ldflags:
-        - -w -s -X "main.Version={{ .Tag }}"
+        - -X "github.com/soulteary/certs-maker/internal/version.Version={{ .Tag }}"
     id: macos
     goos: [ darwin ]
     goarch: [ amd64, arm64 ]
