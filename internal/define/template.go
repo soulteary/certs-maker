@@ -33,3 +33,6 @@ keyUsage = critical, digitalSignature, keyEncipherment
 extendedKeyUsage = serverAuth
 subjectAltName = @alt_names
 `
+
+const GENERATE_CMD_TPL = "openssl req -x509 -newkey rsa:2048 -keyout ${file}.key -out ${file}.crt -days 3650 -nodes -config ${file}.conf"
+const GENERATE_CMD_PLACEHOLDER = "${file}"
