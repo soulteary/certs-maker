@@ -8,10 +8,11 @@
 
 <img src="logo.png">
 
-**Tiny self-signed tool, ~ 3MB Size.**
+**Tiny self-signed tool, file size between 1.5MB and 4MB.**
 
 Generate a self-hosted / dev certificate through configuration.
 
+<img src=".github/assets.png">
 <img src=".github/dockerhub.png">
 
 ## Quick Start
