@@ -2,6 +2,8 @@ package generator_test
 
 import (
 	"fmt"
+	"os"
+	"os/user"
 	"strings"
 	"testing"
 
@@ -57,4 +59,24 @@ func TestTryToFixPermissions(t *testing.T) {
 	if err != nil {
 		t.Fatal("Test TryToFixPermissions failed")
 	}
+
+	os.MkdirAll(define.DEFAULT_DIR, os.ModePerm)
+
+	user, err := user.Current()
+	fmt.Println(user.Username, user.Gid, user.Uid)
+	if err != nil {
+		t.Fatal("Test TryToFixPermissions failed, get current user failed")
+	}
+
+	define.APP_USER = user.Username
+	define.APP_UID = user.Uid
+	define.APP_GID = user.Gid
+	define.APP_OUTPUT_DIR = define.DEFAULT_DIR
+
+	err = generator.TryToFixPermissions()
+	if err != nil {
+		fmt.Println(err)
+		t.Fatal("Test TryToFixPermissions failed")
+	}
+	os.RemoveAll(define.DEFAULT_DIR)
 }
