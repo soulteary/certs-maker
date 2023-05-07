@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 
@@ -29,17 +30,35 @@ func ParseFlags() (appFlags AppFlags) {
 
 func ApplyFlags() {
 	args := ParseFlags()
+	fmt.Println("Flags:")
 
 	define.CERT_COUNTRY = UpdateCountryOption(ENV_KEY_COUNTRY, args.Country, define.DEFAULT_COUNTRY)
+	fmt.Println("  - CERT_COUNTRY=", define.CERT_COUNTRY)
+
 	define.CERT_STATE = UpdateStringOption(ENV_KEY_STATE, args.State, define.DEFAULT_STATE)
+	fmt.Println("  - CERT_STATE=", define.CERT_STATE)
+
 	define.CERT_LOCALITY = strings.ToUpper(UpdateStringOption(ENV_KEY_LOCALITY, args.Locality, define.DEFAULT_LOCALITY))
+	fmt.Println("  - CERT_LOCALITY=", define.CERT_LOCALITY)
+
 	define.CERT_ORGANIZATION = UpdateStringOption(ENV_KEY_ORGANIZATION, args.Organization, define.DEFAULT_ORGANIZATION)
+	fmt.Println("  - CERT_ORGANIZATION=", define.CERT_ORGANIZATION)
+
 	define.CERT_ORGANIZATIONAL_UNIT = UpdateStringOption(ENV_KEY_ORGANIZATION_UNIT, args.OrganizationalUnit, define.DEFAULT_ORGANIZATIONAL_UNIT)
+	fmt.Println("  - CERT_ORGANIZATIONAL_UNIT=", define.CERT_ORGANIZATIONAL_UNIT)
+
 	define.CERT_COMMON_NAME = UpdateStringOption(ENV_KEY_COMMON_NAME, args.CommonName, define.DEFAULT_COMMON_NAME)
+	fmt.Println("  - CERT_COMMON_NAME=", define.CERT_COMMON_NAME)
+
 	define.CERT_DOMAINS = UpdateDomainOption(ENV_KEY_DOMAINS, args.Domains, define.DEFAULT_DOMAINS)
+	fmt.Println("  - CERT_DOMAINS=", define.CERT_DOMAINS)
+
 	define.APP_FOR_K8S = UpdateK8sOption(ENV_KEY_FOR_K8S, args.ForK8s, define.DEFAULT_FOR_K8S)
+	fmt.Println("  - APP_FOR_K8S=", define.APP_FOR_K8S)
+
 	define.APP_OUTPUT_DIR = SantizeDirPath(ENV_KEY_OUTPUT_DIR, args.OutputDir, define.DEFAULT_DIR)
 	os.MkdirAll(define.APP_OUTPUT_DIR, os.ModePerm)
+	fmt.Println("  - APP_OUTPUT_DIR=", define.APP_OUTPUT_DIR)
 
 	user := UpdateStringOption(ENV_KEY_USER, args.User, define.DEFAULT_USER)
 	uid := UpdateStringOption(ENV_KEY_UID, args.UID, define.DEFAULT_UID)
@@ -47,7 +66,12 @@ func ApplyFlags() {
 
 	if user != "" && uid != "" && gid != "" {
 		define.APP_USER = user
+		fmt.Println("  - APP_USER=", define.APP_USER)
+
 		define.APP_UID = uid
+		fmt.Println("  - APP_UID=", define.APP_UID)
+
 		define.APP_GID = gid
+		fmt.Println("  - APP_GID=", define.APP_GID)
 	}
 }

@@ -9,8 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Printf("running soulteary/certs-maker %s\n", version.Version)
+	fmt.Printf("[soulteary/certs-maker] %s\n\n", version.Version)
 	cmd.ApplyFlags()
-	// TODO print all flags
 	generator.Generate()
 }
