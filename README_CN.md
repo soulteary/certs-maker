@@ -17,9 +17,9 @@
 如果你本地已经安装好 Docker 或者 CTR，那么可以通过一条命令快速生成包含 `*.lab.com` 和 `*.data.lab.com` 的证书：
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.1.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.2.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
 # 如果你希望使用 ENV 来调整生成证书的参数
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.1.0
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.2.0
 ```
 
 在命令执行完毕之后，我们检查执行命令的 `ssl` 就能看到生成的证书文件啦：
@@ -38,7 +38,7 @@ version: '2'
 services:
 
 certs-maker:
-    image: soulteary/certs-maker:v3.1.0
+    image: soulteary/certs-maker:v3.2.0
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
     volumes:
@@ -56,9 +56,9 @@ docker-compose up
 如果你希望生成证书对 K8s 使用体验更友好，可以添加 `FOR_K8S` 参数：
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.1.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.2.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
 # 或
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.1.0
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.2.0
 ```
 
 当然，这里也有使用 `FOR_K8S` 参数的 `compose` 配置文件：
@@ -68,7 +68,7 @@ version: '2'
 services:
 
 certs-maker:
-    image: soulteary/certs-maker:v3.1.0
+    image: soulteary/certs-maker:v3.2.0
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
       - FOR_K8S=ON
