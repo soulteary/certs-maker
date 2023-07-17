@@ -61,7 +61,13 @@ func TestGetCertDomainList(t *testing.T) {
 
 	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
 	ret = generator.GetCertDomainList(false)
-	if !strings.Contains(ret, "abc.com") {
+	if !strings.Contains(ret, "DNS.1 = abc.com") {
+		t.Fatal("Test GetCertDomainList failed")
+	}
+
+	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "127.0.0.1")
+	ret = generator.GetCertDomainList(false)
+	if !strings.Contains(ret, "IP.2 = 127.0.0.1") {
 		t.Fatal("Test GetCertDomainList failed")
 	}
 

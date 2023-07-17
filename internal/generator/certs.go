@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -47,7 +48,11 @@ func GetCertDomainList(isK8s bool) string {
 	domains := []string{"[alt_names]"}
 	for idx, domain := range define.CERT_DOMAINS {
 		id := strconv.Itoa(idx + 1)
-		domains = append(domains, "DNS."+id+" = "+domain)
+		if net.ParseIP(domain) == nil {
+			domains = append(domains, "DNS."+id+" = "+domain)
+		} else {
+			domains = append(domains, "IP."+id+" = "+domain)
+		}
 	}
 	return strings.Join(domains, "\n")
 }
