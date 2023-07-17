@@ -6,10 +6,9 @@ RUN echo '' > /etc/apk/repositories && \
 RUN apk add upx
 WORKDIR /build
 ENV CGO_ENABLED=0
-COPY ./main.go .
-COPY ./go.mod .
+COPY . .
 RUN go build -ldflags "-w -s"
-RUN upx -9 -o cert-maker.minify cert-maker && mv cert-maker.minify cert-maker
+RUN upx -9 -o certs-maker.minify certs-maker && mv certs-maker.minify certs-maker
 
 FROM alpine:3.16
 RUN echo '' > /etc/apk/repositories && \
@@ -18,5 +17,5 @@ RUN echo '' > /etc/apk/repositories && \
     echo "Asia/Shanghai" > /etc/timezone
 RUN apk add openssl && rm -rf /var/cache/apk/*
 WORKDIR /
-COPY --from=Builder /build/cert-maker /bin/cert-maker
-ENTRYPOINT ["cert-maker"]
+COPY --from=Builder /build/certs-maker /bin/certs-maker
+ENTRYPOINT ["certs-maker"]
