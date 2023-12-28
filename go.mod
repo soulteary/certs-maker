@@ -1,3 +1,3 @@
 module github.com/soulteary/certs-maker
 
-go 1.20
+go 1.21
