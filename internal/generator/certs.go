@@ -23,13 +23,13 @@ func MakeCerts() {
 	os.WriteFile(filePath, content, define.DEFAULT_MODE)
 
 	if define.APP_FOR_FIREFOX && !define.APP_FOR_K8S {
-		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName))
-		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName))
-		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName))
-		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName))
-		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName))
 	} else {
-		fn.Execute(GetGeneralExecuteCmds(fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, fileName))
 	}
 }
 
@@ -85,10 +85,6 @@ func GetCertConfig(info string, domain string, isK8s bool) []byte {
 	}
 }
 
-func GetGeneralExecuteCmds(output string) string {
-	return strings.ReplaceAll(define.GENERATE_CMD_TPL, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
-}
-
-func GetFirefoxExecuteCmds(stepCommandTpl string, output string) string {
-	return strings.ReplaceAll(stepCommandTpl, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
+func GetGeneralExecuteCmds(commandTpl string, output string) string {
+	return strings.ReplaceAll(commandTpl, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
 }
