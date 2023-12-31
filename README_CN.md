@@ -76,6 +76,29 @@ certs-maker:
       - ./ssl:/ssl
 ```
 
+如果你希望生成证书对 Firefox 的使用体验更友好，可以添加 `FOR_FIREFOX` 参数：
+
+```bash
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.3.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_FIREFOX=ON"
+# 或
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.3.0
+```
+
+当然，这里也有使用 `FOR_FIREFOX` 参数的 `compose` 配置文件：
+
+```yaml
+version: '2'
+services:
+
+certs-maker:
+    image: soulteary/certs-maker:v3.3.0
+    environment:
+      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
+      - FOR_FIREFOX=ON
+    volumes:
+      - ./ssl:/ssl
+```
+
 如果你希望调整生成证书文件的基础信息（描述信息），诸如签发国家、省份、街道、组织等等，可以参考下面支持的配置参数，进行手动调整。
 
 ## SSL 生成工具支持的参数
@@ -94,6 +117,7 @@ certs-maker:
 | Common Name | CERT_CN | `CERT_CN=Hello World` |
 | Domains | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
+| Issue for Firefox | FOR_FIREFOX | `FOR_FIREFOX=ON` |
 | File Owner User | USER | `USER=ubuntu` |
 | File Owner UID | UID | `UID=1234` |
 | File Owner GID | GID | `GID=2345` |
@@ -111,6 +135,7 @@ certs-maker:
 | Common Name | CERT_CN | `--CERT_CN=Hello World` |
 | Domains | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
+| Issue for Firefox | FOR_FIREFOX | `--FOR_FIREFOX=ON` |
 | File Owner User | USER | `--USER=ubuntu` |
 | File Owner UID | UID | `--UID=1234` |
 | File Owner GID | GID | `--GID=2345` |

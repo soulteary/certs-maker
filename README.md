@@ -79,6 +79,29 @@ certs-maker:
       - ./ssl:/ssl
 ```
 
+If you want the certificate to be more friendly to Firefox, you can add the `FOR_FIREFOX` parameter:
+
+```bash
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.3.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_FIREFOX=ON"
+# OR
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.3.0
+```
+
+And Firefox friendly compose file:
+
+```yaml
+version: '2'
+services:
+
+certs-maker:
+    image: soulteary/certs-maker:v3.3.0
+    environment:
+      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
+      - FOR_FIREFOX=ON
+    volumes:
+      - ./ssl:/ssl
+```
+
 If you want to further define the information content of the certificate, including the issuing country, province, street, organization name, etc., you can refer to the following document to manually add parameters.
 
 ## SSL certificate parameters
@@ -97,6 +120,7 @@ Use in environment variables:
 | Common Name | CERT_CN | `CERT_CN=Hello World` |
 | Domains | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
+| Issue for Firefox | FOR_FIREFOX | `FOR_FIREFOX=ON` |
 | File Owner User | USER | `USER=ubuntu` |
 | File Owner UID | UID | `UID=1234` |
 | File Owner GID | GID | `GID=2345` |
@@ -113,6 +137,7 @@ Use in Program CLI arguments:
 | Common Name | CERT_CN | `--CERT_CN=Hello World` |
 | Domains | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
 | Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
+| Issue for Firefox | FOR_FIREFOX | `--FOR_FIREFOX=ON` |
 | File Owner User | USER | `--USER=ubuntu` |
 | File Owner UID | UID | `--UID=1234` |
 | File Owner GID | GID | `--GID=2345` |
