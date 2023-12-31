@@ -55,10 +55,10 @@ func ApplyFlags() {
 	define.CERT_DOMAINS = UpdateDomainOption(ENV_KEY_DOMAINS, args.Domains, define.DEFAULT_DOMAINS)
 	fmt.Println("  - CERT_DOMAINS=", define.CERT_DOMAINS)
 
-	define.APP_FOR_K8S = UpdateK8sOption(ENV_KEY_FOR_K8S, args.ForK8s, define.DEFAULT_FOR_K8S)
+	define.APP_FOR_K8S = UpdateBoolOption(ENV_KEY_FOR_K8S, args.ForK8s, define.DEFAULT_FOR_K8S)
 	fmt.Println("  - APP_FOR_K8S=", define.APP_FOR_K8S)
 
-	define.APP_FOR_FIREFOX = UpdateFirefoxOption(ENV_KEY_FOR_FIREFOX, args.ForFirefox, define.DEFAULT_FOR_FIREFOX)
+	define.APP_FOR_FIREFOX = UpdateBoolOption(ENV_KEY_FOR_FIREFOX, args.ForFirefox, define.DEFAULT_FOR_FIREFOX)
 	fmt.Println("  - APP_FOR_FIREFOX=", define.APP_FOR_FIREFOX)
 
 	define.APP_OUTPUT_DIR = SantizeDirPath(ENV_KEY_OUTPUT_DIR, args.OutputDir, define.DEFAULT_DIR)

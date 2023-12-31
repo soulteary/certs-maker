@@ -9,82 +9,6 @@ import (
 	"github.com/soulteary/certs-maker/internal/fn"
 )
 
-func TestUpdateBoolOption(t *testing.T) {
-
-	// env: empty, args: false, default: false
-	ret := cmd.UpdateBoolOption("TEST_KEY", false, false)
-	if ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: empty, args: false, default: true
-	ret = cmd.UpdateBoolOption("TEST_KEY", false, true)
-	if ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: empty, args: true, default: true
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, true)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: empty, args: false, default: true
-	ret = cmd.UpdateBoolOption("TEST_KEY", false, true)
-	if ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-
-	// env: on, args: false, default: false
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", false, false)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: on, args: true, default: false
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, false)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: on, args: true, default: true
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, true)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: on, args: true, default: false
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, false)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-
-	// env: off, args: false, default: false
-	os.Setenv("TEST_KEY", "off")
-	ret = cmd.UpdateBoolOption("TEST_KEY", false, false)
-	if ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: off, args: true, default: false
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, false)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: off, args: true, default: true
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, true)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-	// env: on, args: true, default: false
-	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateBoolOption("TEST_KEY", true, false)
-	if !ret {
-		t.Fatal("UpdateBoolOption failed")
-	}
-
-	os.Setenv("TEST_KEY", "")
-}
-
 func TestUpdateStringOption(t *testing.T) {
 	// env: empty, args:"a", default:"d"
 	ret := cmd.UpdateStringOption("TEST_KEY", "a", "d")
@@ -254,77 +178,77 @@ func TestSantizeDirPath(t *testing.T) {
 	}
 }
 
-func TestUpdateK8sOption(t *testing.T) {
+func TestUpdateBoolOption(t *testing.T) {
 
 	// env: empty, args: false, default: false
-	ret := cmd.UpdateK8sOption("TEST_KEY", "false", "false")
+	ret := cmd.UpdateBoolOption("TEST_KEY", "false", "false")
 	if ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: empty, args: false, default: true
-	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "true")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "false", "true")
 	if ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: empty, args: true, default: true
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "true")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "true")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: empty, args: false, default: true
-	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "true")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "false", "true")
 	if ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 
 	// env: on, args: false, default: false
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "false")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "false", "false")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: on, args: true, default: false
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "false")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: on, args: true, default: true
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "true")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "true")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: on, args: true, default: false
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "false")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 
 	// env: off, args: false, default: false
 	os.Setenv("TEST_KEY", "off")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "false", "false")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "false", "false")
 	if ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: off, args: true, default: false
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "false")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: off, args: true, default: true
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "true")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "true")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: on, args: true, default: false
 	os.Setenv("TEST_KEY", "on")
-	ret = cmd.UpdateK8sOption("TEST_KEY", "true", "false")
+	ret = cmd.UpdateBoolOption("TEST_KEY", "true", "false")
 	if !ret {
-		t.Fatal("UpdateK8sOption failed")
+		t.Fatal("UpdateBoolOption failed")
 	}
 
 	os.Setenv("TEST_KEY", "")

@@ -22,32 +22,7 @@ func UpdateStringOption(key string, args string, defaults string) string {
 	return strings.TrimSpace(str)
 }
 
-func UpdateBoolOption(key string, args bool, defaults bool) bool {
-	env := os.Getenv(key)
-	value := defaults
-	if env != "" {
-		value = fn.IsBoolString(env)
-	}
-	if args != defaults {
-		value = args
-	}
-	return value
-}
-
-func UpdateK8sOption(key string, args string, defaults string) bool {
-	env := os.Getenv(key)
-	def := fn.IsBoolString(defaults)
-	value := def
-	if env != "" {
-		value = fn.IsBoolString(env)
-	}
-	if fn.IsBoolString(args) != def {
-		value = fn.IsBoolString(args)
-	}
-	return value
-}
-
-func UpdateFirefoxOption(key string, args string, defaults string) bool {
+func UpdateBoolOption(key string, args string, defaults string) bool {
 	env := os.Getenv(key)
 	def := fn.IsBoolString(defaults)
 	value := def
