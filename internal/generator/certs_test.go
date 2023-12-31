@@ -112,10 +112,10 @@ func TestGetCertConfig(t *testing.T) {
 	}
 }
 
-func TestGetExecuteCmds(t *testing.T) {
-	ret := generator.GetExecuteCmds("abc")
+func TestGetGeneralExecuteCmds(t *testing.T) {
+	ret := generator.GetGeneralExecuteCmds("abc")
 	if ret != "openssl req -x509 -newkey rsa:2048 -keyout /abc.key -out /abc.crt -days 3650 -nodes -config /abc.conf" {
-		t.Fatal("test GetExecuteCmds failed")
+		t.Fatal("test GetGeneralExecuteCmds failed")
 	}
 }
 
