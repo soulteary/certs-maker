@@ -15,7 +15,9 @@ const (
 	ENV_KEY_COMMON_NAME       = "CERT_CN"
 	ENV_KEY_DOMAINS           = "CERT_DNS"
 
-	ENV_KEY_FOR_K8S    = "FOR_K8S"
+	ENV_KEY_FOR_K8S     = "FOR_K8S"
+	ENV_KEY_FOR_FIREFOX = "FOR_FIREFOX"
+
 	ENV_KEY_USER       = "USER"
 	ENV_KEY_UID        = "UID"
 	ENV_KEY_GID        = "GID"
@@ -46,7 +48,9 @@ type AppFlags struct {
 	CommonName         string
 	Domains            string
 
-	ForK8s    string
+	ForK8s     string
+	ForFirefox string
+
 	User      string
 	UID       string
 	GID       string

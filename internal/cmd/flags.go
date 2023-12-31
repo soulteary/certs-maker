@@ -56,6 +56,9 @@ func ApplyFlags() {
 	define.APP_FOR_K8S = UpdateK8sOption(ENV_KEY_FOR_K8S, args.ForK8s, define.DEFAULT_FOR_K8S)
 	fmt.Println("  - APP_FOR_K8S=", define.APP_FOR_K8S)
 
+	define.APP_FOR_FIREFOX = UpdateFirefoxOption(ENV_KEY_FOR_FIREFOX, args.ForFirefox, define.DEFAULT_FOR_FIREFOX)
+	fmt.Println("  - APP_FOR_FIREFOX=", define.APP_FOR_FIREFOX)
+
 	define.APP_OUTPUT_DIR = SantizeDirPath(ENV_KEY_OUTPUT_DIR, args.OutputDir, define.DEFAULT_DIR)
 	os.MkdirAll(define.APP_OUTPUT_DIR, os.ModePerm)
 	fmt.Println("  - APP_OUTPUT_DIR=", define.APP_OUTPUT_DIR)

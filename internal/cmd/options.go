@@ -47,6 +47,19 @@ func UpdateK8sOption(key string, args string, defaults string) bool {
 	return value
 }
 
+func UpdateFirefoxOption(key string, args string, defaults string) bool {
+	env := os.Getenv(key)
+	def := fn.IsBoolString(defaults)
+	value := def
+	if env != "" {
+		value = fn.IsBoolString(env)
+	}
+	if fn.IsBoolString(args) != def {
+		value = fn.IsBoolString(args)
+	}
+	return value
+}
+
 func UpdateCountryOption(key string, args string, defaults string) string {
 	value := UpdateStringOption(key, args, defaults)
 	if fn.IsVaildCountry(value) {
