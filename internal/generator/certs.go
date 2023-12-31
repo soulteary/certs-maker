@@ -22,7 +22,11 @@ func MakeCerts() {
 	content := GetCertConfig(baseInfo, domainList, define.APP_FOR_K8S)
 	os.WriteFile(filePath, content, define.DEFAULT_MODE)
 
-	fn.Execute(GetGeneralExecuteCmds(fileName))
+	if define.APP_FOR_FIREFOX && !define.APP_FOR_K8S {
+		fn.Execute(GetFirefoxExecuteCmds(fileName))
+	} else {
+		fn.Execute(GetGeneralExecuteCmds(fileName))
+	}
 }
 
 func GetCertBaseInfo() string {
@@ -79,4 +83,8 @@ func GetCertConfig(info string, domain string, isK8s bool) []byte {
 
 func GetGeneralExecuteCmds(output string) string {
 	return strings.ReplaceAll(define.GENERATE_CMD_TPL, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
+}
+
+func GetFirefoxExecuteCmds(output string) string {
+	return "echo 'Firefox is not supported yet.'"
 }

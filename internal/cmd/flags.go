@@ -19,6 +19,8 @@ func ParseFlags() (appFlags AppFlags) {
 	flag.StringVar(&appFlags.Domains, ENV_KEY_DOMAINS, define.DEFAULT_DOMAINS, CLI_DESC_DOMAINS)
 
 	flag.StringVar(&appFlags.ForK8s, ENV_KEY_FOR_K8S, define.DEFAULT_FOR_K8S, CLI_DESC_FOR_K8S)
+	flag.StringVar(&appFlags.ForFirefox, ENV_KEY_FOR_FIREFOX, define.DEFAULT_FOR_FIREFOX, CLI_DESC_FOR_FIREFOX)
+
 	flag.StringVar(&appFlags.User, ENV_KEY_USER, define.DEFAULT_USER, CLI_DESC_USER)
 	flag.StringVar(&appFlags.UID, ENV_KEY_UID, define.DEFAULT_UID, CLI_DESC_UID)
 	flag.StringVar(&appFlags.GID, ENV_KEY_GID, define.APP_GID, CLI_DESC_GID)

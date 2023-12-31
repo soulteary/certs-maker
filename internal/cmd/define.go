@@ -33,6 +33,7 @@ var (
 	CLI_DESC_COMMON_NAME       = fmt.Sprintf("Common Name, env: `%s`, default: `%s`", ENV_KEY_COMMON_NAME, define.DEFAULT_COMMON_NAME)
 	CLI_DESC_DOMAINS           = fmt.Sprintf("Domains, env: `%s`, default: `%s`", ENV_KEY_DOMAINS, define.DEFAULT_DOMAINS)
 	CLI_DESC_FOR_K8S           = fmt.Sprintf("Issue for K8s, env: `%s`, default: `%v`", ENV_KEY_FOR_K8S, define.DEFAULT_FOR_K8S)
+	CLI_DESC_FOR_FIREFOX       = fmt.Sprintf("Issue for Firefox, env: `%s`, default: `%v`", ENV_KEY_FOR_FIREFOX, define.DEFAULT_FOR_FIREFOX)
 	CLI_DESC_USER              = fmt.Sprintf("File Owner User, env: `%s`, default: `%s`", ENV_KEY_USER, define.DEFAULT_USER)
 	CLI_DESC_UID               = fmt.Sprintf("File Owner UID, env: `%s`, default: `%s`", ENV_KEY_UID, define.DEFAULT_UID)
 	CLI_DESC_GID               = fmt.Sprintf("File Owner GID, env: `%s`, default: `%s`", ENV_KEY_GID, define.DEFAULT_GID)
