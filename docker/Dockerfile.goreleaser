@@ -1,4 +1,4 @@
-FROM alpine:3.16
+FROM alpine:3.19
 RUN apk add openssl && rm -rf /var/cache/apk/*
 WORKDIR /
 COPY certs-maker /bin/certs-maker
