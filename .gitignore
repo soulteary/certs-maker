@@ -4,3 +4,4 @@ certs
 .DS_Store
 coverage.out
 coverage.html
+*.key

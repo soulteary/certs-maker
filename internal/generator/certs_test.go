@@ -120,18 +120,60 @@ func TestGetGeneralExecuteCmds(t *testing.T) {
 }
 
 func TestMakeCerts(t *testing.T) {
+	// test for common use
 	define.APP_FOR_K8S = false
 	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
 	define.APP_OUTPUT_DIR = "./"
 
 	generator.MakeCerts()
 
-	if _, err := os.Stat("./abc.com.key"); errors.Is(err, os.ErrNotExist) {
-		t.Fatal("test MakeCerts failed")
+	fileGenerated := []string{
+		"./abc.com.conf",
+		"./abc.com.key",
 	}
-	os.Remove("./abc.com.key")
-	if _, err := os.Stat("./abc.com.conf"); errors.Is(err, os.ErrNotExist) {
-		t.Fatal("test MakeCerts failed")
+
+	for _, file := range fileGenerated {
+		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+			t.Fatal("test MakeCerts failed")
+		}
+		os.Remove(file)
 	}
-	os.Remove("./abc.com.conf")
+
+	// test for k8s use
+	define.APP_FOR_K8S = true
+	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
+	define.APP_OUTPUT_DIR = "./"
+
+	generator.MakeCerts()
+
+	fileGenerated = []string{
+		"./abc.com.k8s.conf",
+		"./abc.com.k8s.key",
+	}
+	for _, file := range fileGenerated {
+		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+			t.Fatal("test MakeCerts failed")
+		}
+		os.Remove(file)
+	}
+
+	// test for firefox use
+	define.APP_FOR_K8S = false
+	define.APP_FOR_FIREFOX = true
+	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
+	define.APP_OUTPUT_DIR = "./"
+
+	generator.MakeCerts()
+
+	fileGenerated = []string{
+		"./abc.com.conf",
+		"./abc.com.key",
+		"./abc.com.rootCA.key",
+	}
+	for _, file := range fileGenerated {
+		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+			t.Fatal("test MakeCerts failed")
+		}
+		os.Remove(file)
+	}
 }
