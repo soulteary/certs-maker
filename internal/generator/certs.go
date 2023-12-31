@@ -23,7 +23,11 @@ func MakeCerts() {
 	os.WriteFile(filePath, content, define.DEFAULT_MODE)
 
 	if define.APP_FOR_FIREFOX && !define.APP_FOR_K8S {
-		fn.Execute(GetFirefoxExecuteCmds(fileName))
+		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName))
+		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName))
+		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName))
+		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName))
+		fn.Execute(GetFirefoxExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName))
 	} else {
 		fn.Execute(GetGeneralExecuteCmds(fileName))
 	}
@@ -85,6 +89,6 @@ func GetGeneralExecuteCmds(output string) string {
 	return strings.ReplaceAll(define.GENERATE_CMD_TPL, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
 }
 
-func GetFirefoxExecuteCmds(output string) string {
-	return "echo 'Firefox is not supported yet.'"
+func GetFirefoxExecuteCmds(stepCommandTpl string, output string) string {
+	return strings.ReplaceAll(stepCommandTpl, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
 }
