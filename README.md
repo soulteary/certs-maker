@@ -12,8 +12,8 @@
 
 Generate a self-hosted / dev certificate through configuration.
 
-<img src=".github/assets.png">
-<img src=".github/dockerhub.png">
+<img src=".github/assets.jpg">
+<img src=".github/dockerhub.jpg">
 
 ## Quick Start
 

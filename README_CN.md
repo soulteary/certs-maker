@@ -8,9 +8,8 @@
 
 你可以使用它快速生成需要的自签名证书，用于生产或开发场景。
 
-<img src=".github/assets.png">
-
-<img src=".github/dockerhub.png">
+<img src=".github/assets.jpg">
+<img src=".github/dockerhub.jpg">
 
 ## 快速上手
 
