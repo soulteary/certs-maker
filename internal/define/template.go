@@ -38,7 +38,7 @@ const GENERATE_CMD_TPL = "openssl req -x509 -newkey rsa:2048 -keyout ${file}.key
 const GENERATE_CMD_PLACEHOLDER = "${file}"
 
 const GENERATE_FOR_FF_STEP1 = "openssl genrsa -out ${file}.rootCA.key 2048"
-const GENERATE_FOR_FF_STEP2 = "openssl req -x509 -new -nodes -key ${file}.rootCA.key -sha256 -days 3650 -out ${file}.rootCA.pem -config ${file}.conf"
+const GENERATE_FOR_FF_STEP2 = "openssl req -utf8 -x509 -new -nodes -key ${file}.rootCA.key -sha256 -days 3650 -out ${file}.rootCA.pem -config ${file}.conf"
 const GENERATE_FOR_FF_STEP3 = "openssl genrsa -out ${file}.key 2048"
-const GENERATE_FOR_FF_STEP4 = "openssl req -new -key ${file}.key -out ${file}.csr -config ${file}.conf"
+const GENERATE_FOR_FF_STEP4 = "openssl req -utf8 -new -key ${file}.key -out ${file}.csr -config ${file}.conf"
 const GENERATE_FOR_FF_STEP5 = "openssl x509 -req -in ${file}.csr -CA ${file}.rootCA.pem -CAkey ${file}.rootCA.key -CAcreateserial -out ${file}.crt -days 3650 -sha256"
