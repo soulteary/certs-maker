@@ -20,9 +20,9 @@ Generate a self-hosted / dev certificate through configuration.
 Generate self-signed certificate supporting `*.lab.com` and `*.data.lab.com`, just "One Click":
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.3.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.4.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
 # OR use environment:
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.3.0
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.4.0
 ```
 
 Check in the `ssl` directory of the execution command directory:
@@ -41,7 +41,7 @@ version: '2'
 services:
 
 certs-maker:
-    image: soulteary/certs-maker:v3.3.0
+    image: soulteary/certs-maker:v3.4.0
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
     volumes:
@@ -59,9 +59,9 @@ docker-compose up
 If you want the certificate to be more friendly to K8s, you can add the `FOR_K8S` parameter:
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.3.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.4.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
 # OR
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.3.0
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.4.0
 ```
 
 And K8S friendly compose file:
@@ -71,7 +71,7 @@ version: '2'
 services:
 
 certs-maker:
-    image: soulteary/certs-maker:v3.3.0
+    image: soulteary/certs-maker:v3.4.0
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
       - FOR_K8S=ON
@@ -82,9 +82,9 @@ certs-maker:
 If you want the certificate to be more friendly to Firefox, you can add the `FOR_FIREFOX` parameter:
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.3.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_FIREFOX=ON"
+docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.4.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_FIREFOX=ON"
 # OR
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.3.0
+# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.4.0
 ```
 
 And Firefox friendly compose file:
@@ -94,7 +94,7 @@ version: '2'
 services:
 
 certs-maker:
-    image: soulteary/certs-maker:v3.3.0
+    image: soulteary/certs-maker:v3.4.0
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
       - FOR_FIREFOX=ON
