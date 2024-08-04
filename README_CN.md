@@ -1,6 +1,6 @@
 # Certs Maker / 自制证书工具
 
-[![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml) [![Release](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml) [![Docker Image](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker) [![codecov](https://codecov.io/gh/soulteary/certs-maker/branch/main/graph/badge.svg?token=K12L34CSA4)](https://codecov.io/gh/soulteary/certs-maker)
+[![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/github-code-scanning/codeql) [![Release](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml) [![Docker Image](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker) [![codecov](https://codecov.io/gh/soulteary/certs-maker/branch/main/graph/badge.svg?token=K12L34CSA4)](https://codecov.io/gh/soulteary/certs-maker)
 
 <img src="logo.png">
 
