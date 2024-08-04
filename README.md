@@ -8,16 +8,16 @@
 
 <img src="logo.png">
 
-**Tiny self-signed tool, file size between 1.5MB and 4MB.**
+**Lightweight self-signed certificate generator, size between 1.5MB (executable) and 5MB (docker image).**
 
-Generate a self-hosted / dev certificate through configuration.
+Generate self-hosted or development certificates through simple configuration.
 
 <img src=".github/assets.jpg">
 <img src=".github/dockerhub.jpg">
 
 ## Quick Start
 
-Generate self-signed certificate supporting `*.lab.com` and `*.data.lab.com`, just "One Click":
+Create self-signed certificates supporting `*.lab.com` and `*.data.lab.com` domains with just **"One Click"**:
 
 ```bash
 docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.5.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
@@ -25,7 +25,7 @@ docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.5.0 "--CERT_DNS=l
 # docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.5.0
 ```
 
-Check in the `ssl` directory of the execution command directory:
+The generated certificates will be stored in the `ssl` directory within the execution directory:
 
 ```bash
 ssl
@@ -34,7 +34,7 @@ ssl
 └── lab.com.key
 ```
 
-If you prefer to use file configuration, you can use `docker-compose.yml` like this:
+For those who prefer file-based configuration, you can use a `docker-compose.yml` file like this:
 
 ```yaml
 version: '2'
@@ -48,7 +48,7 @@ certs-maker:
       - ./ssl:/ssl
 ```
 
-Then execute the following command:
+Then, run the following command:
 
 ```bash
 docker-compose up
@@ -56,7 +56,7 @@ docker-compose up
 # docker compose up
 ```
 
-If you want the certificate to be more friendly to K8s, you can add the `FOR_K8S` parameter:
+To make the certificate more Kubernetes-friendly, add the `FOR_K8S` parameter:
 
 ```bash
 docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.5.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
@@ -64,7 +64,7 @@ docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.5.0 "--CERT_DNS=l
 # docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.5.0
 ```
 
-And K8S friendly compose file:
+Here's a K8s-friendly `docker-compose.yml` file:
 
 ```yaml
 version: '2'
@@ -79,7 +79,7 @@ certs-maker:
       - ./ssl:/ssl
 ```
 
-If you want the certificate to be more friendly to Firefox, you can add the `FOR_FIREFOX` parameter:
+To enhance compatibility with Firefox, include the `FOR_FIREFOX` parameter:
 
 ```bash
 docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.5.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_FIREFOX=ON"
@@ -87,7 +87,7 @@ docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.5.0 "--CERT_DNS=l
 # docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.5.0
 ```
 
-And Firefox friendly compose file:
+And here's a Firefox-friendly `docker-compose.yml` file:
 
 ```yaml
 version: '2'
@@ -102,13 +102,13 @@ certs-maker:
       - ./ssl:/ssl
 ```
 
-If you want to further define the information content of the certificate, including the issuing country, province, street, organization name, etc., you can refer to the following document to manually add parameters.
+For more granular control over certificate details, such as issuing country, province, street, and organization name, refer to the following section on manually adding parameters.
 
-## SSL certificate parameters
+## SSL Certificate Parameters
 
-You can customize the generated certificate by declaring the environment variables or cli args of docker.
+Customize your generated certificate by setting environment variables or using Docker CLI arguments.
 
-Use in environment variables:
+Using environment variables:
 
 | Parameter | Name | Use in environment variables |
 | ------ | ------ | ------ |
@@ -125,7 +125,7 @@ Use in environment variables:
 | File Owner UID | UID | `UID=1234` |
 | File Owner GID | GID | `GID=2345` |
 
-Use in Program CLI arguments:
+Using program CLI arguments:
 
 | Parameter | Name | Use in CLI arguments |
 | ------ | ------ | ------ |
@@ -145,3 +145,8 @@ Use in Program CLI arguments:
 ## Docker Image
 
 [soulteary/certs-maker](https://hub.docker.com/r/soulteary/certs-maker)
+
+## Related Documentation and Tutorials
+
+- [Creating a Lightweight 3MB Docker Image for Self-Signed Certificates: Introducing Certs Maker](https://soulteary.com/2022/10/22/make-docker-tools-image-with-only-3md-self-signed-certificate-certs-maker.html)
+- [A Comprehensive Guide to Creating and Implementing Self-Signed Certificates](https://soulteary.com/2021/02/06/how-to-make-and-use-a-self-signed-certificate.html)
