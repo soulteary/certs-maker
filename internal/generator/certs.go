@@ -31,6 +31,9 @@ func MakeCerts() {
 	} else {
 		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, fileName))
 	}
+
+	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_CRT_TO_DER, fileName))
+	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_KEY_TO_DER, fileName))
 }
 
 func GetCertBaseInfo() string {

@@ -42,3 +42,6 @@ const GENERATE_FOR_FF_STEP2 = "openssl req -utf8 -x509 -new -nodes -key ${file}.
 const GENERATE_FOR_FF_STEP3 = "openssl genrsa -out ${file}.pem.key 2048"
 const GENERATE_FOR_FF_STEP4 = "openssl req -utf8 -new -key ${file}.pem.key -out ${file}.pem.csr -config ${file}.conf"
 const GENERATE_FOR_FF_STEP5 = "openssl x509 -req -in ${file}.pem.csr -CA ${file}.rootCA.pem -CAkey ${file}.rootCA.key -CAcreateserial -out ${file}.pem.crt -days 3650 -sha256"
+
+const CONVERT_CRT_TO_DER = "openssl x509 -in ${file}.pem.crt -outform DER -out ${file}.der.crt"
+const CONVERT_KEY_TO_DER = "openssl rsa -in ${file}.pem.key -outform DER -out ${file}.der.key"
