@@ -114,7 +114,7 @@ func TestGetCertConfig(t *testing.T) {
 
 func TestGetGeneralExecuteCmds(t *testing.T) {
 	ret := generator.GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, "abc")
-	if ret != "openssl req -x509 -newkey rsa:2048 -keyout /abc.key -out /abc.crt -days 3650 -nodes -config /abc.conf" {
+	if ret != "openssl req -x509 -newkey rsa:2048 -keyout /abc.pem.key -out /abc.pem.crt -days 3650 -nodes -config /abc.conf" {
 		t.Fatal("test GetGeneralExecuteCmds failed")
 	}
 }
@@ -129,7 +129,7 @@ func TestMakeCerts(t *testing.T) {
 
 	fileGenerated := []string{
 		"./abc.com.conf",
-		"./abc.com.key",
+		"./abc.com.pem.key",
 	}
 
 	for _, file := range fileGenerated {
@@ -148,7 +148,7 @@ func TestMakeCerts(t *testing.T) {
 
 	fileGenerated = []string{
 		"./abc.com.k8s.conf",
-		"./abc.com.k8s.key",
+		"./abc.com.k8s.pem.key",
 	}
 	for _, file := range fileGenerated {
 		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
@@ -167,7 +167,7 @@ func TestMakeCerts(t *testing.T) {
 
 	fileGenerated = []string{
 		"./abc.com.conf",
-		"./abc.com.key",
+		"./abc.com.pem.key",
 		"./abc.com.rootCA.key",
 	}
 	for _, file := range fileGenerated {

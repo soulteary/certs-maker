@@ -16,7 +16,7 @@ func TestGenerate(t *testing.T) {
 
 	generator.Generate()
 
-	if _, err := os.Stat("./abc.com.key"); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat("./abc.com.pem.key"); errors.Is(err, os.ErrNotExist) {
 		t.Fatal("test MakeCerts failed")
 	}
 	os.Remove("./abc.com.key")
