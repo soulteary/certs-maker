@@ -26,6 +26,8 @@ func ParseFlags() (appFlags AppFlags) {
 	flag.StringVar(&appFlags.GID, ENV_KEY_GID, define.APP_GID, CLI_DESC_GID)
 	flag.StringVar(&appFlags.OutputDir, ENV_KEY_OUTPUT_DIR, define.APP_OUTPUT_DIR, CLI_DESC_OUTPUT_DIR)
 
+	flag.StringVar(&appFlags.ExpireDays, ENV_KEY_EXPIRE_DAYS, define.DEFAULT_EXPIRE_DAYS, CLI_DESC_EXPIRE_DAYS)
+
 	flag.Parse()
 	return appFlags
 }
@@ -79,4 +81,6 @@ func ApplyFlags() {
 		define.APP_GID = gid
 		fmt.Println("  - APP_GID=", define.APP_GID)
 	}
+
+	define.CERT_EXPIRE_DAYS = UpdateStringOption(ENV_KEY_EXPIRE_DAYS, args.ExpireDays, define.DEFAULT_EXPIRE_DAYS)
 }

@@ -16,6 +16,8 @@ const (
 	DEFAULT_UID  = ""
 	DEFAULT_GID  = ""
 	DEFAULT_DIR  = "./ssl"
+
+	DEFAULT_EXPIRE_DAYS = "3650"
 )
 
 var (
@@ -34,6 +36,8 @@ var (
 	APP_UID        string
 	APP_GID        string
 	APP_OUTPUT_DIR string
+
+	CERT_EXPIRE_DAYS string
 )
 
 const DEFAULT_MODE = 0644

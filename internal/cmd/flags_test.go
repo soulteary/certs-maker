@@ -66,4 +66,8 @@ func TestApplyFlags(t *testing.T) {
 	if define.APP_OUTPUT_DIR != define.DEFAULT_DIR {
 		t.Fatal("test flag parse failed")
 	}
+
+	if define.CERT_EXPIRE_DAYS != define.DEFAULT_EXPIRE_DAYS {
+		t.Fatal("test flag parse failed")
+	}
 }

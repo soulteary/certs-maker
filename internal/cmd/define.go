@@ -22,6 +22,8 @@ const (
 	ENV_KEY_UID        = "UID"
 	ENV_KEY_GID        = "GID"
 	ENV_KEY_OUTPUT_DIR = "DIR"
+
+	ENV_KEY_EXPIRE_DAYS = "EXPIRE_DAYS"
 )
 
 var (
@@ -38,6 +40,7 @@ var (
 	CLI_DESC_UID               = fmt.Sprintf("File Owner UID, env: `%s`, default: `%s`", ENV_KEY_UID, define.DEFAULT_UID)
 	CLI_DESC_GID               = fmt.Sprintf("File Owner GID, env: `%s`, default: `%s`", ENV_KEY_GID, define.DEFAULT_GID)
 	CLI_DESC_OUTPUT_DIR        = fmt.Sprintf("Certs Dir, env: `%s`, default: `%s`", ENV_KEY_OUTPUT_DIR, define.DEFAULT_DIR)
+	CLI_DESC_EXPIRE_DAYS       = fmt.Sprintf("Expire Days, env: `%s`, default: `%s`", ENV_KEY_EXPIRE_DAYS, define.DEFAULT_EXPIRE_DAYS)
 )
 
 type AppFlags struct {
@@ -56,4 +59,6 @@ type AppFlags struct {
 	UID       string
 	GID       string
 	OutputDir string
+
+	ExpireDays string
 }
