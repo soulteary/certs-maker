@@ -113,8 +113,9 @@ func TestGetCertConfig(t *testing.T) {
 }
 
 func TestGetGeneralExecuteCmds(t *testing.T) {
-	ret := generator.GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, "abc")
-	if ret != "openssl req -x509 -newkey rsa:2048 -keyout /abc.pem.key -out /abc.pem.crt -days 3650 -nodes -config /abc.conf" {
+	ret := generator.GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, "abc", "3456")
+	fmt.Println(ret)
+	if ret != "openssl req -x509 -newkey rsa:2048 -keyout /abc.pem.key -out /abc.pem.crt -days 3456 -nodes -config /abc.conf" {
 		t.Fatal("test GetGeneralExecuteCmds failed")
 	}
 }

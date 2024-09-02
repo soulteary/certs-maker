@@ -22,18 +22,20 @@ func MakeCerts() {
 	content := GetCertConfig(baseInfo, domainList, define.APP_FOR_K8S)
 	os.WriteFile(filePath, content, define.DEFAULT_MODE)
 
+	expireDays := define.DEFAULT_EXPIRE_DAYS
+
 	if define.APP_FOR_FIREFOX && !define.APP_FOR_K8S {
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName, expireDays))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName, expireDays))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName, expireDays))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName, expireDays))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName, expireDays))
 	} else {
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, fileName))
+		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, fileName, expireDays))
 	}
 
-	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_CRT_TO_DER, fileName))
-	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_KEY_TO_DER, fileName))
+	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_CRT_TO_DER, fileName, expireDays))
+	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_KEY_TO_DER, fileName, expireDays))
 }
 
 func GetCertBaseInfo() string {
@@ -88,6 +90,7 @@ func GetCertConfig(info string, domain string, isK8s bool) []byte {
 	}
 }
 
-func GetGeneralExecuteCmds(commandTpl string, output string) string {
-	return strings.ReplaceAll(commandTpl, define.GENERATE_CMD_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
+func GetGeneralExecuteCmds(commandTpl string, output string, exipre string) string {
+	cmd := strings.ReplaceAll(commandTpl, define.GENERATE_FILE_PLACEHOLDER, fmt.Sprintf("%s/%s", define.APP_OUTPUT_DIR, output))
+	return strings.ReplaceAll(cmd, define.GENERATE_EXPIRE_DAYS_PLACEHOLDER, exipre)
 }

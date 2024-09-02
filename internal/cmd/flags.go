@@ -83,4 +83,5 @@ func ApplyFlags() {
 	}
 
 	define.CERT_EXPIRE_DAYS = UpdateStringOption(ENV_KEY_EXPIRE_DAYS, args.ExpireDays, define.DEFAULT_EXPIRE_DAYS)
+	fmt.Println("  - CERT_EXPIRE_DAYS=", define.CERT_EXPIRE_DAYS)
 }
