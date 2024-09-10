@@ -1,7 +1,7 @@
 version: "2"
 services:
   certs-maker:
-    image: soulteary/certs-maker:v3.6.0
+    image: soulteary/certs-maker:v3.6.1
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
     volumes:
