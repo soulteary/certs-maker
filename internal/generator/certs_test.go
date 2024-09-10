@@ -178,3 +178,27 @@ func TestMakeCerts(t *testing.T) {
 		os.Remove(file)
 	}
 }
+
+func TestMakeCertsWithCustomName(t *testing.T) {
+	// test for common use
+	define.APP_FOR_K8S = false
+	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
+	define.APP_OUTPUT_DIR = "./"
+	define.CUSTOM_FILE_NAME = "custom"
+
+	generator.MakeCerts()
+
+	fileGenerated := []string{
+		"./custom.conf",
+		"./custom.pem.key",
+	}
+
+	for _, file := range fileGenerated {
+		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
+			t.Fatal("test MakeCerts failed")
+		}
+		os.Remove(file)
+	}
+
+	define.CUSTOM_FILE_NAME = ""
+}

@@ -18,10 +18,11 @@ const (
 	ENV_KEY_FOR_K8S     = "FOR_K8S"
 	ENV_KEY_FOR_FIREFOX = "FOR_FIREFOX"
 
-	ENV_KEY_USER       = "USER"
-	ENV_KEY_UID        = "UID"
-	ENV_KEY_GID        = "GID"
-	ENV_KEY_OUTPUT_DIR = "DIR"
+	ENV_KEY_USER             = "USER"
+	ENV_KEY_UID              = "UID"
+	ENV_KEY_GID              = "GID"
+	ENV_KEY_OUTPUT_DIR       = "DIR"
+	ENV_KEY_CUSTOM_FILE_NAME = "FILE_NAME"
 
 	ENV_KEY_EXPIRE_DAYS = "EXPIRE_DAYS"
 )
@@ -40,6 +41,7 @@ var (
 	CLI_DESC_UID               = fmt.Sprintf("File Owner UID, env: `%s`, default: `%s`", ENV_KEY_UID, define.DEFAULT_UID)
 	CLI_DESC_GID               = fmt.Sprintf("File Owner GID, env: `%s`, default: `%s`", ENV_KEY_GID, define.DEFAULT_GID)
 	CLI_DESC_OUTPUT_DIR        = fmt.Sprintf("Certs Dir, env: `%s`, default: `%s`", ENV_KEY_OUTPUT_DIR, define.DEFAULT_DIR)
+	CLI_DESC_CUSTOM_FILE_NAME  = fmt.Sprintf("Custom File Name, env: `%s`, default: `%s`", ENV_KEY_CUSTOM_FILE_NAME, define.DEFAULT_CUSTOM_FILE_NAME)
 	CLI_DESC_EXPIRE_DAYS       = fmt.Sprintf("Expire Days, env: `%s`, default: `%s`", ENV_KEY_EXPIRE_DAYS, define.DEFAULT_EXPIRE_DAYS)
 )
 
@@ -55,10 +57,11 @@ type AppFlags struct {
 	ForK8s     string
 	ForFirefox string
 
-	User      string
-	UID       string
-	GID       string
-	OutputDir string
+	User           string
+	UID            string
+	GID            string
+	OutputDir      string
+	CustomFileName string
 
 	ExpireDays string
 }

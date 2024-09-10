@@ -12,10 +12,11 @@ const (
 	DEFAULT_FOR_K8S     = "off" // Certs For K8S
 	DEFAULT_FOR_FIREFOX = "off" // Certs For Firefox
 
-	DEFAULT_USER = ""
-	DEFAULT_UID  = ""
-	DEFAULT_GID  = ""
-	DEFAULT_DIR  = "./ssl"
+	DEFAULT_USER             = ""
+	DEFAULT_UID              = ""
+	DEFAULT_GID              = ""
+	DEFAULT_DIR              = "./ssl"
+	DEFAULT_CUSTOM_FILE_NAME = ""
 
 	DEFAULT_EXPIRE_DAYS = "3650"
 )
@@ -38,6 +39,7 @@ var (
 	APP_OUTPUT_DIR string
 
 	CERT_EXPIRE_DAYS string
+	CUSTOM_FILE_NAME string
 )
 
 const DEFAULT_MODE = 0644

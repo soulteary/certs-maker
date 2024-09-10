@@ -70,4 +70,8 @@ func TestApplyFlags(t *testing.T) {
 	if define.CERT_EXPIRE_DAYS != define.DEFAULT_EXPIRE_DAYS {
 		t.Fatal("test flag parse failed")
 	}
+
+	if define.CUSTOM_FILE_NAME != define.DEFAULT_CUSTOM_FILE_NAME {
+		t.Fatal("test flag parse failed")
+	}
 }

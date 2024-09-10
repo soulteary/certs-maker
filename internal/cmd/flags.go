@@ -27,6 +27,7 @@ func ParseFlags() (appFlags AppFlags) {
 	flag.StringVar(&appFlags.OutputDir, ENV_KEY_OUTPUT_DIR, define.APP_OUTPUT_DIR, CLI_DESC_OUTPUT_DIR)
 
 	flag.StringVar(&appFlags.ExpireDays, ENV_KEY_EXPIRE_DAYS, define.DEFAULT_EXPIRE_DAYS, CLI_DESC_EXPIRE_DAYS)
+	flag.StringVar(&appFlags.CustomFileName, ENV_KEY_CUSTOM_FILE_NAME, define.DEFAULT_CUSTOM_FILE_NAME, CLI_DESC_CUSTOM_FILE_NAME)
 
 	flag.Parse()
 	return appFlags
@@ -66,6 +67,8 @@ func ApplyFlags() {
 	define.APP_OUTPUT_DIR = SantizeDirPath(ENV_KEY_OUTPUT_DIR, args.OutputDir, define.DEFAULT_DIR)
 	os.MkdirAll(define.APP_OUTPUT_DIR, os.ModePerm)
 	fmt.Println("  - APP_OUTPUT_DIR=", define.APP_OUTPUT_DIR)
+	define.CUSTOM_FILE_NAME = UpdateStringOption(ENV_KEY_CUSTOM_FILE_NAME, args.CustomFileName, define.DEFAULT_CUSTOM_FILE_NAME)
+	fmt.Println("  - CUSTOM_FILE_NAME=", define.CUSTOM_FILE_NAME)
 
 	user := UpdateStringOption(ENV_KEY_USER, args.User, define.DEFAULT_USER)
 	uid := UpdateStringOption(ENV_KEY_UID, args.UID, define.DEFAULT_UID)

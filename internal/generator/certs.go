@@ -17,6 +17,9 @@ func MakeCerts() {
 	domainList := GetCertDomainList(define.APP_FOR_K8S)
 
 	fileName := GetCertFileNameByDomain(define.CERT_DOMAINS[0], define.APP_FOR_K8S)
+	if define.CUSTOM_FILE_NAME != "" {
+		fileName = define.CUSTOM_FILE_NAME
+	}
 	filePath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
 
 	content := GetCertConfig(baseInfo, domainList, define.APP_FOR_K8S)
