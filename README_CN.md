@@ -124,6 +124,8 @@ certs-maker:
 | File Owner User | USER | `USER=ubuntu` |
 | File Owner UID | UID | `UID=1234` |
 | File Owner GID | GID | `GID=2345` |
+| Custom certs output dir | DIR | `DIR=./ssl` |
+| Custom certs filename | CUSTOM_FILE_NAME | `CUSTOM_FILE_NAME=filename` |
 | Expire Days | EXPIRE_DAYS | `EXPIRE_DAYS=3650` |
 
 使用命令行参数：
@@ -142,6 +144,8 @@ certs-maker:
 | File Owner User | USER | `--USER=ubuntu` |
 | File Owner UID | UID | `--UID=1234` |
 | File Owner GID | GID | `--GID=2345` |
+| Custom certs output dir | DIR | `--DIR=./ssl` |
+| Custom certs filename | CUSTOM_FILE_NAME | `--CUSTOM_FILE_NAME=filename` |
 | Expire Days | EXPIRE_DAYS | `--EXPIRE_DAYS=3650` |
 
 ## Docker 镜像发布地址
