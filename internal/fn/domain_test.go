@@ -65,6 +65,11 @@ func TestGetDomainsByString(t *testing.T) {
 		t.Fatal("test GetDomainsByString failed")
 	}
 
+	ret = fn.GetDomainsByString("2001:db8::1,2001:db8::2,a.com,192.168.1.1,A.COM,*.a.b.com")
+	if !reflect.DeepEqual(ret, []string{"2001:db8::1", "2001:db8::2", "a.com", "192.168.1.1", "*.a.b.com"}) {
+		t.Fatal("test GetDomainsByString failed")
+	}
+
 	ret = fn.GetDomainsByString("")
 	if !reflect.DeepEqual(ret, []string{}) {
 		t.Fatal("test GetDomainsByString failed")
