@@ -65,7 +65,7 @@ jobs:
           threshold: "0"
           report: "true"
           commit: "false"
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
       - name: Reuse GTR coverage profile
         if: github.event_name == 'pull_request'
         shell: bash
