@@ -8,7 +8,7 @@ integration, benchmarks and fuzz workflows retain their distinct checks.
 
 Reports run on pushed tags and `workflow_dispatch`. They do not generate bot
 commits on branch pushes. A separate job may commit the five stable reports in
-one `[skip ci]` commit, only if the tested commit still equals the default branch
+one report commit, only if the tested commit still equals the default branch
 head. Older release tags and non-default manual refs retain downloadable reports
 without overwriting the current branch. PRs never enter that write job. Protected
 branches can reject writeback; no PAT, bypass, or force-push is used.
@@ -21,3 +21,5 @@ Quality-score floor: `0%`.
 Raw profiles/test logs are artifacts, never committed.
 
 Published releases query actual tag-push report runs for the tested commit. A successful or active tag run prevents duplicate tests; missing, failed, cancelled, or skipped runs allow the release event to generate reports. This covers skipped commits and releases whose tag push produced no workflow event. API lookup errors fail the gate rather than silently assume a report exists. Stable report-only artifacts explicitly restore `.github` on download; mixed report/document artifacts retain repository hierarchy.
+
+Before generation the job removes only its known generated reports and raw result directory, so failed producers cannot upload stale checked-in evidence. Artifact names include the run attempt. The write token already prevents recursive workflow triggers, so report commits omit CI skip annotations that could suppress a later release tag.

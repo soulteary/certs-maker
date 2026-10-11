@@ -2,10 +2,21 @@ name: Go quality reports
 on:
   push:
     tags:
-      - '*'
+      - '**'
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Source tag or branch to report (empty uses the selected ref)
+        type: string
+        required: false
+        default: ''
+      reuse_existing_tag_report:
+        description: Skip tests if a successful or active tag report already covers this source
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -24,11 +35,13 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: Avoid repeating ordinary tag reports
         id: trigger
         shell: bash
         env:
           EVENT_NAME: ${{ github.event_name }}
+          REQUEST_REUSE: ${{ inputs.reuse_existing_tag_report && 'true' || 'false' }}
           REPOSITORY: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -40,7 +53,7 @@ jobs:
           import urllib.request
 
           enabled = True
-          if os.environ["EVENT_NAME"] == "release":
+          if os.environ["EVENT_NAME"] == "release" or os.environ.get("REQUEST_REUSE") == "true":
               sha = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
               query = urllib.parse.urlencode({"event": "push", "head_sha": sha, "per_page": 100})
               base = os.environ["GITHUB_API_URL"].rstrip("/")
@@ -91,11 +104,19 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+          ref: ${{ inputs.source_ref || github.sha }}
       - name: Record tested source
         id: source
         shell: bash
         run: |-
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Remove stale generated report evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          test ! -L .github
+          rm -f -- .github/go-test-report.md .github/go-test-report.json .github/coverage.svg .github/goreportcard.svg .github/goreportcard-report.md
+          rm -rf -- .github/test-results
       - name: Test, race and coverage (GTR v1.1.2)
         id: go_test_report
         uses: soulteary/go-test-report-action@bf04b539f7bf2a6f67d602da4259904b3dcdeba1  # v1.1.2
@@ -196,10 +217,10 @@ jobs:
           mkdir -p "$(dirname ".github/goreportcard-report.md")"
           test ! -L ".github/goreportcard-report.md"
           cp "$REPORT_DIR/.github/goreportcard-report.md" ".github/goreportcard-report.md"
-          git add -- .github/go-test-report.md .github/go-test-report.json .github/coverage.svg .github/goreportcard.svg .github/goreportcard-report.md
+          git add -f -- .github/go-test-report.md .github/go-test-report.json .github/coverage.svg .github/goreportcard.svg .github/goreportcard-report.md
           if git diff --cached --quiet; then exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "chore: update Go quality reports [skip ci]"
+          git commit -m "chore: update Go quality reports"
           # A concurrent branch update rejects this ordinary push; never force-push reports.
           git push origin "HEAD:refs/heads/$DEFAULT_BRANCH"
