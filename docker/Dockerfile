@@ -1,7 +1,7 @@
 FROM golang:1.27.2-alpine3.24 as builder
 RUN echo '' > /etc/apk/repositories && \
-    echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.19/main"         >> /etc/apk/repositories && \
-    echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.19/community"    >> /etc/apk/repositories && \
+    echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.24/main"         >> /etc/apk/repositories && \
+    echo "https://mirror.tuna.tsinghua.edu.cn/alpine/v3.24/community"    >> /etc/apk/repositories && \
     echo "Asia/Shanghai" > /etc/timezone
 RUN apk add upx
 WORKDIR /build
