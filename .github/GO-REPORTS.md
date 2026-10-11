@@ -20,6 +20,12 @@ Per-package floor: `0%`.
 Quality-score floor: `0%`.
 Raw profiles/test logs are artifacts, never committed.
 
-Published releases query actual tag-push report runs for the tested commit. A successful or active tag run prevents duplicate tests; missing, failed, cancelled, or skipped runs allow the release event to generate reports. This covers skipped commits and releases whose tag push produced no workflow event. API lookup errors fail the gate rather than silently assume a report exists. Stable report-only artifacts explicitly restore `.github` on download; mixed report/document artifacts retain repository hierarchy.
+Published releases and automated release dispatches reuse only completed successful tag-push report runs for the tested SHA that still have an unexpired stable report artifact. An artifact from an earlier attempt of the same run is valid after a partial retry (`artifact_attempt <= run_attempt`). Active, failed, cancelled, missing, or expired runs do not suppress fresh reports. API errors fail the gate rather than silently assume evidence exists.
 
-Before generation the job removes only its known generated reports and raw result directory, so failed producers cannot upload stale checked-in evidence. Artifact names include the run attempt. The write token already prevents recursive workflow triggers, so report commits omit CI skip annotations that could suppress a later release tag.
+The producing reports job outputs its artifact name. Writeback uses that output even when only failed jobs are rerun; it never substitutes the consuming attempt number. Five report files restore the `.github` artifact root; grantseal's mixed report/document artifact retains repository hierarchy.
+
+Report concurrency includes the source ref and unique run ID, so pending reports cannot replace each other. Writeback concurrency includes the tested SHA, so historical releases cannot replace the current source's pending writer. Only the unchanged default-branch source can publish; identical-source writers serialize and a successful report commit makes later writers stale. Artifacts remain available when writeback is skipped or blocked by branch protection.
+
+Cleanup runs even after preceding steps fail. Stable and raw evidence is uploaded after gate failures, and failed report jobs cannot publish repository changes. Report commits have no CI skip annotation: the normal workflow token prevents recursive push triggers. Production Actions and CLI versions remain pinned to formal releases; PR report calls remain read-only.
+
+Successful token-published releases explicitly dispatch the current default-branch report workflow for their released tag, since token-generated release events do not start another workflow. Branch snapshots and PR release checks do not dispatch report publishers. Historical tags can also be reported manually from the default-branch workflow using `source_ref`.
