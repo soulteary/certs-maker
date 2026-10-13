@@ -116,15 +116,13 @@ func GetCertFileNameByDomain(domain string, isK8s bool) string {
 }
 
 func GetCertConfig(info string, domain string, isK8s bool) []byte {
-	if !isK8s {
-		return []byte(
-			fmt.Sprintf("%s\n%s\n%s\n%s\n", define.CERT_BASE_INFO, info, define.CERT_EXTENSIONS, domain),
-		)
-	} else {
-		return []byte(
-			fmt.Sprintf("%s\n%s\n%s\n%s\n", define.CERT_BASE_INFO, info, define.CERT_EXTENSIONS_K8S, domain),
-		)
+	extensions := define.CERT_EXTENSIONS
+	if isK8s {
+		extensions = define.CERT_EXTENSIONS_K8S
+	} else if define.APP_FOR_FIREFOX {
+		extensions = define.CERT_EXTENSIONS_FIREFOX
 	}
+	return []byte(fmt.Sprintf("%s\n%s\n%s\n%s\n", define.CERT_BASE_INFO, info, extensions, domain))
 }
 
 func GetGeneralExecuteCmds(commandTpl string, output string, exipre string) string {
