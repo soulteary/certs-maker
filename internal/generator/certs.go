@@ -19,7 +19,17 @@ import (
 	"github.com/soulteary/certs-maker/internal/fn"
 )
 
-func MakeCerts() {
+func MakeCerts() error {
+	expireDays := strings.TrimSpace(define.CERT_EXPIRE_DAYS)
+	if expireDays == "" {
+		expireDays = define.DEFAULT_EXPIRE_DAYS
+	}
+	days, err := strconv.ParseUint(expireDays, 10, 31)
+	if err != nil || days == 0 {
+		return fmt.Errorf("invalid EXPIRE_DAYS %q: expected an integer between 1 and 2147483647", expireDays)
+	}
+	expireDays = strconv.FormatUint(days, 10)
+
 	baseInfo := GetCertBaseInfo()
 	domainList := GetCertDomainList(define.APP_FOR_K8S)
 
@@ -30,22 +40,39 @@ func MakeCerts() {
 	filePath := filepath.Join(define.APP_OUTPUT_DIR, fileName+".conf")
 
 	content := GetCertConfig(baseInfo, domainList, define.APP_FOR_K8S)
-	os.WriteFile(filePath, content, define.DEFAULT_MODE)
-
-	expireDays := define.DEFAULT_EXPIRE_DAYS
-
-	if define.APP_FOR_FIREFOX && !define.APP_FOR_K8S {
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName, expireDays))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName, expireDays))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName, expireDays))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName, expireDays))
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName, expireDays))
-	} else {
-		fn.Execute(GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, fileName, expireDays))
+	if err := os.WriteFile(filePath, content, define.DEFAULT_MODE); err != nil {
+		return fmt.Errorf("write certificate configuration: %w", err)
 	}
 
-	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_CRT_TO_DER, fileName, expireDays))
-	fn.Execute(GetGeneralExecuteCmds(define.CONVERT_KEY_TO_DER, fileName, expireDays))
+	if define.APP_FOR_FIREFOX && !define.APP_FOR_K8S {
+		if _, err := fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP1, fileName, expireDays)); err != nil {
+			return fmt.Errorf("generate Firefox root key: %w", err)
+		}
+		if _, err := fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP2, fileName, expireDays)); err != nil {
+			return fmt.Errorf("generate Firefox root certificate: %w", err)
+		}
+		if _, err := fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP3, fileName, expireDays)); err != nil {
+			return fmt.Errorf("generate Firefox certificate key: %w", err)
+		}
+		if _, err := fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP4, fileName, expireDays)); err != nil {
+			return fmt.Errorf("generate Firefox certificate request: %w", err)
+		}
+		if _, err := fn.Execute(GetGeneralExecuteCmds(define.GENERATE_FOR_FF_STEP5, fileName, expireDays)); err != nil {
+			return fmt.Errorf("sign Firefox certificate: %w", err)
+		}
+	} else {
+		if _, err := fn.Execute(GetGeneralExecuteCmds(define.GENERATE_CMD_TPL, fileName, expireDays)); err != nil {
+			return fmt.Errorf("generate certificate: %w", err)
+		}
+	}
+
+	if _, err := fn.Execute(GetGeneralExecuteCmds(define.CONVERT_CRT_TO_DER, fileName, expireDays)); err != nil {
+		return fmt.Errorf("convert certificate to DER: %w", err)
+	}
+	if _, err := fn.Execute(GetGeneralExecuteCmds(define.CONVERT_KEY_TO_DER, fileName, expireDays)); err != nil {
+		return fmt.Errorf("convert certificate key to DER: %w", err)
+	}
+	return nil
 }
 
 func GetCertBaseInfo() string {
