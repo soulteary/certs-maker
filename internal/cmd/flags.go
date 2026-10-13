@@ -17,26 +17,40 @@ import (
 )
 
 func ParseFlags() (appFlags AppFlags) {
-	flag.StringVar(&appFlags.Country, ENV_KEY_COUNTRY, define.DEFAULT_COUNTRY, CLI_DESC_COUNTRY)
-	flag.StringVar(&appFlags.State, ENV_KEY_STATE, define.DEFAULT_STATE, CLI_DESC_STATE)
-	flag.StringVar(&appFlags.Locality, ENV_KEY_LOCALITY, define.DEFAULT_LOCALITY, CLI_DESC_LOCALITY)
-	flag.StringVar(&appFlags.Organization, ENV_KEY_ORGANIZATION, define.DEFAULT_ORGANIZATION, CLI_DESC_ORGANIZATION)
-	flag.StringVar(&appFlags.OrganizationalUnit, ENV_KEY_ORGANIZATION_UNIT, define.DEFAULT_ORGANIZATIONAL_UNIT, CLI_DESC_ORGANIZATION_UNIT)
-	flag.StringVar(&appFlags.CommonName, ENV_KEY_COMMON_NAME, define.DEFAULT_COMMON_NAME, CLI_DESC_COMMON_NAME)
-	flag.StringVar(&appFlags.Domains, ENV_KEY_DOMAINS, define.DEFAULT_DOMAINS, CLI_DESC_DOMAINS)
+	unspecified := make(map[string]*string)
+	stringFlag := func(target *string, name, defaults, description string) {
+		flag.StringVar(target, name, defaults, description)
+		unspecified[name] = target
+	}
 
-	flag.StringVar(&appFlags.ForK8s, ENV_KEY_FOR_K8S, define.DEFAULT_FOR_K8S, CLI_DESC_FOR_K8S)
-	flag.StringVar(&appFlags.ForFirefox, ENV_KEY_FOR_FIREFOX, define.DEFAULT_FOR_FIREFOX, CLI_DESC_FOR_FIREFOX)
+	stringFlag(&appFlags.Country, ENV_KEY_COUNTRY, define.DEFAULT_COUNTRY, CLI_DESC_COUNTRY)
+	stringFlag(&appFlags.State, ENV_KEY_STATE, define.DEFAULT_STATE, CLI_DESC_STATE)
+	stringFlag(&appFlags.Locality, ENV_KEY_LOCALITY, define.DEFAULT_LOCALITY, CLI_DESC_LOCALITY)
+	stringFlag(&appFlags.Organization, ENV_KEY_ORGANIZATION, define.DEFAULT_ORGANIZATION, CLI_DESC_ORGANIZATION)
+	stringFlag(&appFlags.OrganizationalUnit, ENV_KEY_ORGANIZATION_UNIT, define.DEFAULT_ORGANIZATIONAL_UNIT, CLI_DESC_ORGANIZATION_UNIT)
+	stringFlag(&appFlags.CommonName, ENV_KEY_COMMON_NAME, define.DEFAULT_COMMON_NAME, CLI_DESC_COMMON_NAME)
+	stringFlag(&appFlags.Domains, ENV_KEY_DOMAINS, define.DEFAULT_DOMAINS, CLI_DESC_DOMAINS)
 
-	flag.StringVar(&appFlags.User, ENV_KEY_USER, define.DEFAULT_USER, CLI_DESC_USER)
-	flag.StringVar(&appFlags.UID, ENV_KEY_UID, define.DEFAULT_UID, CLI_DESC_UID)
-	flag.StringVar(&appFlags.GID, ENV_KEY_GID, define.APP_GID, CLI_DESC_GID)
-	flag.StringVar(&appFlags.OutputDir, ENV_KEY_OUTPUT_DIR, define.APP_OUTPUT_DIR, CLI_DESC_OUTPUT_DIR)
+	stringFlag(&appFlags.ForK8s, ENV_KEY_FOR_K8S, define.DEFAULT_FOR_K8S, CLI_DESC_FOR_K8S)
+	stringFlag(&appFlags.ForFirefox, ENV_KEY_FOR_FIREFOX, define.DEFAULT_FOR_FIREFOX, CLI_DESC_FOR_FIREFOX)
 
-	flag.StringVar(&appFlags.ExpireDays, ENV_KEY_EXPIRE_DAYS, define.DEFAULT_EXPIRE_DAYS, CLI_DESC_EXPIRE_DAYS)
-	flag.StringVar(&appFlags.CustomFileName, ENV_KEY_CUSTOM_FILE_NAME, define.DEFAULT_CUSTOM_FILE_NAME, CLI_DESC_CUSTOM_FILE_NAME)
+	stringFlag(&appFlags.User, ENV_KEY_USER, define.DEFAULT_USER, CLI_DESC_USER)
+	stringFlag(&appFlags.UID, ENV_KEY_UID, define.DEFAULT_UID, CLI_DESC_UID)
+	stringFlag(&appFlags.GID, ENV_KEY_GID, define.DEFAULT_GID, CLI_DESC_GID)
+	stringFlag(&appFlags.OutputDir, ENV_KEY_OUTPUT_DIR, define.DEFAULT_DIR, CLI_DESC_OUTPUT_DIR)
+
+	stringFlag(&appFlags.ExpireDays, ENV_KEY_EXPIRE_DAYS, define.DEFAULT_EXPIRE_DAYS, CLI_DESC_EXPIRE_DAYS)
+	stringFlag(&appFlags.CustomFileName, ENV_KEY_CUSTOM_FILE_NAME, define.DEFAULT_CUSTOM_FILE_NAME, CLI_DESC_CUSTOM_FILE_NAME)
 
 	flag.Parse()
+	flag.Visit(func(option *flag.Flag) {
+		delete(unspecified, option.Name)
+	})
+	// Registered defaults remain in help output, but only explicit CLI values
+	// should take precedence over environment variables.
+	for _, target := range unspecified {
+		*target = ""
+	}
 	return appFlags
 }
 
