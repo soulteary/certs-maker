@@ -8,9 +8,9 @@
 package generator_test
 
 import (
-	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -128,84 +128,56 @@ func TestGetGeneralExecuteCmds(t *testing.T) {
 }
 
 func TestMakeCerts(t *testing.T) {
-	// test for common use
-	define.APP_FOR_K8S = false
-	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
-	define.APP_OUTPUT_DIR = "./"
-
-	generator.MakeCerts()
-
-	fileGenerated := []string{
-		"./abc.com.conf",
-		"./abc.com.pem.key",
-	}
-
-	for _, file := range fileGenerated {
-		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
-			t.Fatal("test MakeCerts failed")
-		}
-		os.Remove(file)
-	}
-
-	// test for k8s use
-	define.APP_FOR_K8S = true
-	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
-	define.APP_OUTPUT_DIR = "./"
-
-	generator.MakeCerts()
-
-	fileGenerated = []string{
-		"./abc.com.k8s.conf",
-		"./abc.com.k8s.pem.key",
-	}
-	for _, file := range fileGenerated {
-		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
-			t.Fatal("test MakeCerts failed")
-		}
-		os.Remove(file)
-	}
-
-	// test for firefox use
-	define.APP_FOR_K8S = false
-	define.APP_FOR_FIREFOX = true
-	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
-	define.APP_OUTPUT_DIR = "./"
-
-	generator.MakeCerts()
-
-	fileGenerated = []string{
-		"./abc.com.conf",
-		"./abc.com.pem.key",
-		"./abc.com.rootCA.key",
-	}
-	for _, file := range fileGenerated {
-		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
-			t.Fatal("test MakeCerts failed")
-		}
-		os.Remove(file)
+	for _, tc := range []struct {
+		name    string
+		k8s     bool
+		firefox bool
+	}{
+		{name: "common"},
+		{name: "k8s", k8s: true},
+		{name: "firefox", firefox: true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := prepareCertificateTest(t)
+			define.APP_FOR_K8S, define.APP_FOR_FIREFOX = tc.k8s, tc.firefox
+			if err := generator.MakeCerts(); err != nil {
+				t.Fatalf("MakeCerts failed: %v", err)
+			}
+			name := "expiry.example.com"
+			if tc.k8s {
+				name += ".k8s"
+			}
+			for _, suffix := range []string{".conf", ".pem.key", ".pem.crt", ".der.key", ".der.crt"} {
+				if _, err := os.Stat(filepath.Join(dir, name+suffix)); err != nil {
+					t.Fatalf("expected generated %s: %v", suffix, err)
+				}
+			}
+			if tc.firefox {
+				if _, err := os.Stat(filepath.Join(dir, name+".rootCA.key")); err != nil {
+					t.Fatalf("expected Firefox root key: %v", err)
+				}
+			}
+		})
 	}
 }
 
 func TestMakeCertsWithCustomName(t *testing.T) {
-	// test for common use
-	define.APP_FOR_K8S = false
-	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
-	define.APP_OUTPUT_DIR = "./"
+	dir := prepareCertificateTest(t)
 	define.CUSTOM_FILE_NAME = "custom"
 
-	generator.MakeCerts()
+	if err := generator.MakeCerts(); err != nil {
+		t.Fatalf("MakeCerts failed: %v", err)
+	}
 
 	fileGenerated := []string{
-		"./custom.conf",
-		"./custom.pem.key",
+		filepath.Join(dir, "custom.conf"),
+		filepath.Join(dir, "custom.pem.key"),
+		filepath.Join(dir, "custom.pem.crt"),
 	}
 
 	for _, file := range fileGenerated {
-		if _, err := os.Stat(file); errors.Is(err, os.ErrNotExist) {
-			t.Fatal("test MakeCerts failed")
+		if _, err := os.Stat(file); err != nil {
+			t.Fatalf("expected generated file %s: %v", file, err)
 		}
-		os.Remove(file)
 	}
-
-	define.CUSTOM_FILE_NAME = ""
 }

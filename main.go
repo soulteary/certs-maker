@@ -9,6 +9,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/soulteary/certs-maker/internal/cmd"
 	"github.com/soulteary/certs-maker/internal/generator"
@@ -18,5 +19,8 @@ import (
 func main() {
 	fmt.Printf("[soulteary/certs-maker] %s\n\n", version.Version)
 	cmd.ApplyFlags()
-	generator.Generate()
+	if err := generator.Generate(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
 }
