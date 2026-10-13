@@ -2,11 +2,11 @@
 
 Generate TLS certificates for development and self-hosted services with a single command.
 
-[![Tests](https://github.com/soulteary/certs-maker/actions/workflows/coverage.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/coverage.yml)
-[![Release](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml)
-[![Docker Pulls](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker)
+[![Go Test Coverage](./.github/coverage.svg)](./.github/go-test-report.md) [![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md) [![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml) [![Release](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml) [![Docker Image](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker)
 
 [English](README.md) | [简体中文](README_CN.md)
+
+<img src="logo.png" alt="Certs Maker logo" width="160">
 
 Certs Maker turns a list of DNS names and IP addresses into certificate files you can use with a web server, reverse proxy, or local service. It runs as a one-shot Docker container or a native macOS/Linux program and uses OpenSSL to generate RSA 2048-bit keys and SHA-256 signatures.
 
