@@ -16,9 +16,9 @@
 如果你本地已经安装好 Docker 或者 CTR，那么可以通过一条命令快速生成包含 `*.lab.com` 和 `*.data.lab.com` 的证书：
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.8.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
+docker run --rm -v "$(pwd)/ssl:/ssl" soulteary/certs-maker:v3.8.1 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
 # 如果你希望使用 ENV 来调整生成证书的参数
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.8.0
+# docker run --rm -v "$(pwd)/ssl:/ssl" -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.8.1
 ```
 
 在命令执行完毕之后，我们检查执行命令的 `ssl` 就能看到生成的证书文件啦：
@@ -37,11 +37,9 @@ ssl
 如果你更喜欢使用配置文件来生成证书，可以使用下面这个 `docker-compose.yml`：
 
 ```yaml
-version: '2'
 services:
-
-certs-maker:
-    image: soulteary/certs-maker:v3.8.0
+  certs-maker:
+    image: soulteary/certs-maker:v3.8.1
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
     volumes:
@@ -51,27 +49,24 @@ certs-maker:
 接着，执行下面的命令：
 
 ```bash
-docker-compose up
-# 或者在新版的 compose 中使用下面的命令
-# docker compose up
+docker compose run --rm certs-maker
+# 旧版 Docker Compose：docker-compose run --rm certs-maker
 ```
 
 如果你希望生成证书对 K8s 使用体验更友好，可以添加 `FOR_K8S` 参数：
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.8.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_K8S=ON"
+docker run --rm -v "$(pwd)/ssl:/ssl" soulteary/certs-maker:v3.8.1 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com" --FOR_K8S=ON
 # 或
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.8.0
+# docker run --rm -v "$(pwd)/ssl:/ssl" -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.8.1
 ```
 
 当然，这里也有使用 `FOR_K8S` 参数的 `compose` 配置文件：
 
 ```yaml
-version: '2'
 services:
-
-certs-maker:
-    image: soulteary/certs-maker:v3.8.0
+  certs-maker:
+    image: soulteary/certs-maker:v3.8.1
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
       - FOR_K8S=ON
@@ -82,19 +77,17 @@ certs-maker:
 如果你希望生成证书对 Firefox 的使用体验更友好，可以添加 `FOR_FIREFOX` 参数：
 
 ```bash
-docker run --rm -it -v `pwd`/ssl:/ssl soulteary/certs-maker:v3.8.0 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com --FOR_FIREFOX=ON"
+docker run --rm -v "$(pwd)/ssl:/ssl" soulteary/certs-maker:v3.8.1 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com" --FOR_FIREFOX=ON
 # 或
-# docker run --rm -it -v `pwd`/ssl:/ssl -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.8.0
+# docker run --rm -v "$(pwd)/ssl:/ssl" -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.8.1
 ```
 
 当然，这里也有使用 `FOR_FIREFOX` 参数的 `compose` 配置文件：
 
 ```yaml
-version: '2'
 services:
-
-certs-maker:
-    image: soulteary/certs-maker:v3.8.0
+  certs-maker:
+    image: soulteary/certs-maker:v3.8.1
     environment:
       - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
       - FOR_FIREFOX=ON
