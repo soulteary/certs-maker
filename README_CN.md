@@ -17,7 +17,7 @@
 ```bash
 docker run --rm -v "$(pwd)/ssl:/ssl" \
   -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" \
-  soulteary/certs-maker:v3.8.1
+  soulteary/certs-maker:v3.8.2
 ```
 
 文件会写入宿主机当前目录下的 `./ssl`：
@@ -41,7 +41,7 @@ openssl x509 -in ssl/lab.com.pem.crt -noout -subject -issuer -dates -ext subject
 
 生成文件并不会让浏览器自动信任证书。[证书使用与信任指南（英文）](docs/certificates.md)说明了验证、客户端信任、各模式的输出文件，以及 Kubernetes 用法。
 
-示例固定使用已发布的 v3.8.1 镜像。使用自定义有效期或 Firefox 模式前，请阅读[版本兼容说明（英文）](docs/installation.md#release-compatibility)；在新版本发布之前，这些修复需要通过源码构建使用。
+示例固定使用 v3.8.2 镜像，包含自定义有效期、Firefox SAN 和 CLI 参数优先级修复。旧版 v3.8.1 的限制见[版本兼容说明（英文）](docs/installation.md#release-compatibility)。
 
 ## Docker Compose
 
@@ -50,7 +50,7 @@ openssl x509 -in ssl/lab.com.pem.crt -noout -subject -issuer -dates -ext subject
 ```yaml
 services:
   certs-maker:
-    image: soulteary/certs-maker:v3.8.1
+    image: soulteary/certs-maker:v3.8.2
     environment:
       CERT_DNS: "lab.com,*.lab.com,*.data.lab.com"
     volumes:
@@ -94,7 +94,7 @@ docker compose run --rm certs-maker
 - **浏览器仍提示证书不可信：** 配置客户端信任并验证域名，参见[信任与验证（英文）](docs/certificates.md#client-trust)。
 - **找不到输出文件：** 挂载将宿主机 `./ssl` 映射到容器内 `/ssl`。`DIR` 改变的是容器内路径，参见[输出路径（英文）](docs/configuration.md#output-paths-and-file-names)。
 - **能重复执行吗：** 可以，但同名前缀的文件会被覆盖，私钥也会重新生成。先移走原文件或使用新前缀。
-- **v3.8.1 为什么忽略自定义有效期，或 Firefox 证书验证失败：** 该版本尚未包含对应修复，可使用[源码构建（英文）](docs/installation.md#build-from-source)。
+- **v3.8.1 为什么忽略自定义有效期，或 Firefox 证书验证失败：** 该版本未包含对应修复。请升级至 v3.8.2，或使用[源码构建（英文）](docs/installation.md#build-from-source)。
 
 ## 相关资料
 

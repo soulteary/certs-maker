@@ -1,6 +1,6 @@
 # Configuration reference
 
-Every option supports an environment variable and a matching `--NAME=value` CLI flag. The following defaults and precedence describe corrected source builds; see [release compatibility](installation.md#release-compatibility) for v3.8.1 limitations.
+Every option supports an environment variable and a matching `--NAME=value` CLI flag. The following defaults and precedence apply to v3.8.2 and current source; see [release compatibility](installation.md#release-compatibility) for v3.8.1 limitations.
 
 | Variable / CLI name | Default | Meaning |
 | --- | --- | --- |
@@ -68,12 +68,12 @@ Rerunning with the same output directory and prefix overwrites existing files an
 
 The ownership helper only runs when `USER`, `UID`, and `GID` are all non-empty. It uses Alpine-compatible account tools and requires permission to create an account/group and change file ownership. Use unused numeric IDs and an unused account name inside the container; map them to the intended host owner as appropriate.
 
-For example, an Alpine-based local image can write files for host UID 1000 and GID 1000:
+For example, the published Alpine-based image can write files for host UID 1000 and GID 1000:
 
 ```bash
 docker run --rm -v "$(pwd)/ssl:/ssl" \
   -e "CERT_DNS=lab.com" -e USER=certowner -e UID=1000 -e GID=1000 \
-  certs-maker:local
+  soulteary/certs-maker:v3.8.2
 ```
 
 This helper makes all output files readable by all users, including private keys. Restrict access to the output directory and restore restrictive key permissions when needed:
