@@ -1,11 +1,11 @@
 # Go Report Card
 
-**Grade: A+** (100.0%)
+**Grade: A+** (99.1%)
 
 | Metric | Value |
 | ------ | ----- |
-| Files | 23 |
-| Issues | 0 |
+| Files | 25 |
+| Issues | 2 |
 
 ## Checks
 
@@ -13,12 +13,19 @@
 | ----- | ----- |
 | gofmt | 100% |
 | go_vet | 100% |
-| gocyclo | 100% |
+| gocyclo | 92% |
 | ineffassign | 100% |
 | license | 100% |
 | misspell | 100% |
 
-No issues found. Nice work!
+## Issues
+
+### gocyclo
+
+- `internal/generator/firefox_test.go`
+  - Line 16: cyclomatic complexity 32 for function TestCertificateProfiles
+- `internal/generator/certs.go`
+  - Line 22: cyclomatic complexity 16 for function MakeCerts
 
 ---
 
