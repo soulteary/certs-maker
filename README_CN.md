@@ -1,30 +1,29 @@
 # Certs Maker / 自制证书工具
 
-[![Go Test Coverage](./.github/coverage.svg)](./.github/go-test-report.md) [![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md) [![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/github-code-scanning/codeql) [![Release](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml) [![Docker Image](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker)
+[![Go Test Coverage](./.github/coverage.svg)](./.github/go-test-report.md) [![Go Report Card](./.github/goreportcard.svg)](./.github/goreportcard-report.md) [![CodeQL](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/codeql.yml) [![Release](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/certs-maker/actions/workflows/release.yaml) [![Docker Image](https://img.shields.io/docker/pulls/soulteary/certs-maker.svg)](https://hub.docker.com/r/soulteary/certs-maker)
 
-<img src="logo.png">
+[English](README.md) | [简体中文](README_CN.md)
 
-一个小巧的 SSL 证书生成工具（Docker 工具镜像），静态文件尺寸 1.5MB 左右，容器镜像尺寸 5MB 左右。
+<img src="logo.png" alt="Certs Maker 标志" width="160">
 
-你可以使用它快速生成需要的自签名证书，用于生产或开发场景。
+一个用于开发和自托管服务的证书生成工具。支持 Docker，以及 macOS、Linux 原生二进制；可为多个域名、通配符域名和 IP 地址生成 PEM、DER 文件。
 
-<img src=".github/assets.jpg">
-<img src=".github/dockerhub.jpg">
+证书需要客户端显式信任。用于私有生产环境时，请按自己的 PKI 策略管理信任、私钥、部署和续期。工具负责生成文件，不会自动安装证书或续期。
 
 ## 快速上手
 
-如果你本地已经安装好 Docker 或者 CTR，那么可以通过一条命令快速生成包含 `*.lab.com` 和 `*.data.lab.com` 的证书：
+先安装并启动 Docker，然后执行：
 
 ```bash
-docker run --rm -v "$(pwd)/ssl:/ssl" soulteary/certs-maker:v3.8.1 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com"
-# 如果你希望使用 ENV 来调整生成证书的参数
-# docker run --rm -v "$(pwd)/ssl:/ssl" -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" soulteary/certs-maker:v3.8.1
+docker run --rm -v "$(pwd)/ssl:/ssl" \
+  -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" \
+  soulteary/certs-maker:v3.8.1
 ```
 
-在命令执行完毕之后，我们检查执行命令的 `ssl` 就能看到生成的证书文件啦：
+文件会写入宿主机当前目录下的 `./ssl`：
 
-```bash
-ssl
+```text
+ssl/
 ├── lab.com.conf
 ├── lab.com.der.crt
 ├── lab.com.der.key
@@ -32,120 +31,74 @@ ssl
 └── lab.com.pem.key
 ```
 
-你可以根据自己的喜好，使用 PEM 或者 DER 格式的证书。
+接受 PEM 格式的服务器通常使用 `lab.com.pem.crt` 与 `lab.com.pem.key` 这一对文件。DER 文件以二进制格式保存同一证书和私钥。请妥善保管私钥。
 
-如果你更喜欢使用配置文件来生成证书，可以使用下面这个 `docker-compose.yml`：
+用 OpenSSL 检查证书的签发信息、有效期和 SAN：
+
+```bash
+openssl x509 -in ssl/lab.com.pem.crt -noout -subject -issuer -dates -ext subjectAltName
+```
+
+生成文件并不会让浏览器自动信任证书。[证书使用与信任指南（英文）](docs/certificates.md)说明了验证、客户端信任、各模式的输出文件，以及 Kubernetes 用法。
+
+示例固定使用已发布的 v3.8.1 镜像。使用自定义有效期或 Firefox 模式前，请阅读[版本兼容说明（英文）](docs/installation.md#release-compatibility)；在新版本发布之前，这些修复需要通过源码构建使用。
+
+## Docker Compose
+
+将以下配置保存为 `docker-compose.yml`，或使用仓库中的同名文件：
 
 ```yaml
 services:
   certs-maker:
     image: soulteary/certs-maker:v3.8.1
     environment:
-      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
+      CERT_DNS: "lab.com,*.lab.com,*.data.lab.com"
     volumes:
       - ./ssl:/ssl
 ```
 
-接着，执行下面的命令：
+执行一次，结束后移除容器：
 
 ```bash
 docker compose run --rm certs-maker
-# 旧版 Docker Compose：docker-compose run --rm certs-maker
 ```
 
-如果你希望生成证书对 K8s 使用体验更友好，可以添加 `FOR_K8S` 参数：
+旧版 Compose 可使用 `docker-compose run --rm certs-maker`。
+
+## 证书模式
+
+- **默认模式：** 生成带有 `CA:TRUE`、指定 SAN 的自签名证书，以及 PEM、DER 文件。
+- **Kubernetes（`FOR_K8S=ON`）：** 使用 `CA:FALSE` 服务端证书扩展，在 SAN 中添加 `*` 和 `localhost`，并在默认文件名前缀中添加 `.k8s`。Kubernetes Secret 需要自行创建和部署。
+- **Firefox（`FOR_FIREFOX=ON`）：** 生成本地根 CA 和单独签发的服务端证书。需要信任它的客户端应导入公开的根 CA 证书。
+
+两个开关同时启用时，Kubernetes 模式优先。[模式、输出文件与验证说明（英文）](docs/certificates.md#certificate-modes)解释了应部署哪份证书、信任哪份证书。
+
+## 配置
+
+每个选项都支持环境变量及同名 CLI 参数。每个参数必须独立传入；带空格或通配符的值需要加引号：
 
 ```bash
-docker run --rm -v "$(pwd)/ssl:/ssl" soulteary/certs-maker:v3.8.1 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com" --FOR_K8S=ON
-# 或
-# docker run --rm -v "$(pwd)/ssl:/ssl" -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_K8S=ON" soulteary/certs-maker:v3.8.1
+./certs-maker "--CERT_DNS=lab.com,127.0.0.1" "--CERT_CN=Lab Server" --FOR_K8S=ON
 ```
 
-当然，这里也有使用 `FOR_K8S` 参数的 `compose` 配置文件：
+[配置参数参考（英文）](docs/configuration.md)集中列出默认值、接受的值、优先级、文件命名、输出路径限制，以及文件所有者设置。
 
-```yaml
-services:
-  certs-maker:
-    image: soulteary/certs-maker:v3.8.1
-    environment:
-      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
-      - FOR_K8S=ON
-    volumes:
-      - ./ssl:/ssl
-```
+## 原生安装与源码构建
 
-如果你希望生成证书对 Firefox 的使用体验更友好，可以添加 `FOR_FIREFOX` 参数：
+[GitHub Releases](https://github.com/soulteary/certs-maker/releases)提供 macOS、Linux 二进制和 SHA-256 校验文件。原生运行需要 `PATH` 中有 `openssl` 和 `sh`；Docker 镜像已包含这两个依赖。
 
-```bash
-docker run --rm -v "$(pwd)/ssl:/ssl" soulteary/certs-maker:v3.8.1 "--CERT_DNS=lab.com,*.lab.com,*.data.lab.com" --FOR_FIREFOX=ON
-# 或
-# docker run --rm -v "$(pwd)/ssl:/ssl" -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" -e "FOR_FIREFOX=ON" soulteary/certs-maker:v3.8.1
-```
+[安装指南（英文）](docs/installation.md)包含平台选择、校验、源码构建和本地镜像构建。文件及镜像体积随版本和架构变化；下载时的压缩体积与解压后二进制、本地镜像体积不同。
 
-当然，这里也有使用 `FOR_FIREFOX` 参数的 `compose` 配置文件：
+## 常见问题
 
-```yaml
-services:
-  certs-maker:
-    image: soulteary/certs-maker:v3.8.1
-    environment:
-      - CERT_DNS=lab.com,*.lab.com,*.data.lab.com
-      - FOR_FIREFOX=ON
-    volumes:
-      - ./ssl:/ssl
-```
+- **浏览器仍提示证书不可信：** 配置客户端信任并验证域名，参见[信任与验证（英文）](docs/certificates.md#client-trust)。
+- **找不到输出文件：** 挂载将宿主机 `./ssl` 映射到容器内 `/ssl`。`DIR` 改变的是容器内路径，参见[输出路径（英文）](docs/configuration.md#output-paths-and-file-names)。
+- **能重复执行吗：** 可以，但同名前缀的文件会被覆盖，私钥也会重新生成。先移走原文件或使用新前缀。
+- **v3.8.1 为什么忽略自定义有效期，或 Firefox 证书验证失败：** 该版本尚未包含对应修复，可使用[源码构建（英文）](docs/installation.md#build-from-source)。
 
-如果你希望调整生成证书文件的基础信息（描述信息），诸如签发国家、省份、街道、组织等等，可以参考下面支持的配置参数，进行手动调整。
-
-## SSL 生成工具支持的参数
-
-你可以通过调整环境变量或者 CLI 命令行参数来改变生成的证书。
-
-使用环境变量：
-
-| 类型 | 名称 | 如何在环境变量中使用 |
-| ------ | ------ | ------ |
-| Country Name | CERT_C | `CERT_C=CN` |
-| State Or Province Name | CERT_ST | `CERT_ST=BJ` |
-| Locality Name | CERT_L | `CERT_L=HD` |
-| Organization Name | CERT_O | `CERT_O=Lab` |
-| Organizational Unit Name | CERT_OU | `CERT_OU=Dev` |
-| Common Name | CERT_CN | `CERT_CN=Hello World` |
-| Domains | CERT_DNS | `CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
-| Issue for K8s | FOR_K8S | `FOR_K8S=ON` |
-| Issue for Firefox | FOR_FIREFOX | `FOR_FIREFOX=ON` |
-| File Owner User | USER | `USER=ubuntu` |
-| File Owner UID | UID | `UID=1234` |
-| File Owner GID | GID | `GID=2345` |
-| Custom certs output dir | DIR | `DIR=./ssl` |
-| Custom certs filename | CUSTOM_FILE_NAME | `CUSTOM_FILE_NAME=filename` |
-| Expire Days | EXPIRE_DAYS | `EXPIRE_DAYS=3650` |
-
-使用命令行参数：
-
-| 类型 | 名称 | 如何在环境变量中使用 |
-| ------ | ------ | ------ |
-| Country Name | CERT_C | `--CERT_C=CN` |
-| State Or Province Name | CERT_ST | `--CERT_ST=BJ` |
-| Locality Name | CERT_L | `--CERT_L=HD` |
-| Organization Name | CERT_O | `--CERT_O=Lab` |
-| Organizational Unit Name | CERT_OU | `--CERT_OU=Dev` |
-| Common Name | CERT_CN | `--CERT_CN=Hello World` |
-| Domains | CERT_DNS | `--CERT_DNS=lab.com,*.lab.com,*.data.lab.com` |
-| Issue for K8s | FOR_K8S | `--FOR_K8S=ON` |
-| Issue for Firefox | FOR_FIREFOX | `--FOR_FIREFOX=ON` |
-| File Owner User | USER | `--USER=ubuntu` |
-| File Owner UID | UID | `--UID=1234` |
-| File Owner GID | GID | `--GID=2345` |
-| Custom certs output dir | DIR | `--DIR=./ssl` |
-| Custom certs filename | CUSTOM_FILE_NAME | `--CUSTOM_FILE_NAME=filename` |
-| Expire Days | EXPIRE_DAYS | `--EXPIRE_DAYS=3650` |
-
-## Docker 镜像发布地址
-
-[soulteary/certs-maker](https://hub.docker.com/r/soulteary/certs-maker)
-
-## 相关文档教程
+## 相关资料
 
 - [《只有 3MB 的自签名证书制作 Docker 工具镜像：Certs Maker》](https://soulteary.com/2022/10/22/make-docker-tools-image-with-only-3md-self-signed-certificate-certs-maker.html)
 - [《如何制作和使用自签名证书》](https://soulteary.com/2021/02/06/how-to-make-and-use-a-self-signed-certificate.html)
+- [Docker Hub](https://hub.docker.com/r/soulteary/certs-maker)
+- [安全政策](SECURITY.md) · [MIT 许可证](LICENSE)
