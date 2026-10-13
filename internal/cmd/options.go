@@ -20,10 +20,10 @@ import (
 func UpdateStringOption(key string, args string, defaults string) string {
 	env := os.Getenv(key)
 	str := defaults
-	if fn.IsNotEmptyAndNotDefaultString(env, defaults) {
+	if env != "" {
 		str = env
 	}
-	if fn.IsNotEmptyAndNotDefaultString(args, defaults) {
+	if args != "" {
 		str = args
 	}
 	return strings.TrimSpace(str)
@@ -36,7 +36,7 @@ func UpdateBoolOption(key string, args string, defaults string) bool {
 	if env != "" {
 		value = fn.IsBoolString(env)
 	}
-	if fn.IsBoolString(args) != def {
+	if args != "" {
 		value = fn.IsBoolString(args)
 	}
 	return value

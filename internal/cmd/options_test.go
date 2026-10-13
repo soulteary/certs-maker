@@ -49,6 +49,11 @@ func TestUpdateStringOption(t *testing.T) {
 	if ret != "e" {
 		t.Fatal("UpdateStringOption failed")
 	}
+	// An explicit CLI default still overrides the environment.
+	ret = cmd.UpdateStringOption("TEST_KEY", "d", "d")
+	if ret != "d" {
+		t.Fatal("explicit CLI default did not override the environment")
+	}
 	// env: "e", args:"a", default:""
 	ret = cmd.UpdateStringOption("TEST_KEY", "a", "")
 	if ret != "a" {
@@ -211,7 +216,7 @@ func TestUpdateBoolOption(t *testing.T) {
 	// env: on, args: false, default: false
 	os.Setenv("TEST_KEY", "on")
 	ret = cmd.UpdateBoolOption("TEST_KEY", "false", "false")
-	if !ret {
+	if ret {
 		t.Fatal("UpdateBoolOption failed")
 	}
 	// env: on, args: true, default: false
@@ -259,4 +264,31 @@ func TestUpdateBoolOption(t *testing.T) {
 	}
 
 	os.Setenv("TEST_KEY", "")
+}
+
+func TestUpdateBoolOptionFallback(t *testing.T) {
+	tests := []struct {
+		name     string
+		env      string
+		args     string
+		defaults string
+		want     bool
+	}{
+		{"unset CLI preserves enabled environment", "ON", "", "off", true},
+		{"unset CLI preserves disabled environment", "OFF", "", "on", false},
+		{"empty values preserve enabled default", "", "", "on", true},
+		{"empty values preserve disabled default", "", "", "off", false},
+		{"explicit OFF overrides enabled environment", "ON", "OFF", "off", false},
+		{"explicit false overrides enabled environment", "ON", "false", "off", false},
+		{"explicit zero overrides enabled environment", "ON", "0", "off", false},
+		{"explicit ON overrides disabled environment", "OFF", "ON", "on", true},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			t.Setenv("TEST_KEY", test.env)
+			if got := cmd.UpdateBoolOption("TEST_KEY", test.args, test.defaults); got != test.want {
+				t.Fatalf("UpdateBoolOption() = %v, want %v", got, test.want)
+			}
+		})
+	}
 }
