@@ -7,7 +7,9 @@
 
 package generator
 
-func Generate() {
-	MakeCerts()
-	TryToFixPermissions()
+func Generate() error {
+	if err := MakeCerts(); err != nil {
+		return err
+	}
+	return TryToFixPermissions()
 }

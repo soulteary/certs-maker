@@ -8,27 +8,21 @@
 package generator_test
 
 import (
-	"errors"
 	"os"
+	"path/filepath"
 	"testing"
 
-	"github.com/soulteary/certs-maker/internal/define"
 	"github.com/soulteary/certs-maker/internal/generator"
 )
 
 func TestGenerate(t *testing.T) {
-	define.APP_FOR_K8S = false
-	define.CERT_DOMAINS = append(define.CERT_DOMAINS, "abc.com")
-	define.APP_OUTPUT_DIR = "./"
-
-	generator.Generate()
-
-	if _, err := os.Stat("./abc.com.pem.key"); errors.Is(err, os.ErrNotExist) {
-		t.Fatal("test MakeCerts failed")
+	dir := prepareCertificateTest(t)
+	if err := generator.Generate(); err != nil {
+		t.Fatalf("Generate failed: %v", err)
 	}
-	os.Remove("./abc.com.key")
-	if _, err := os.Stat("./abc.com.conf"); errors.Is(err, os.ErrNotExist) {
-		t.Fatal("test MakeCerts failed")
+	for _, suffix := range []string{".conf", ".pem.key", ".pem.crt"} {
+		if _, err := os.Stat(filepath.Join(dir, "expiry.example.com"+suffix)); err != nil {
+			t.Fatalf("expected generated %s: %v", suffix, err)
+		}
 	}
-	os.Remove("./abc.com.conf")
 }
