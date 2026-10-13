@@ -1,6 +1,6 @@
 # Certificate usage and trust
 
-These instructions describe corrected source builds. For known differences in the published v3.8.1 image and binaries, see [release compatibility](installation.md#release-compatibility).
+These instructions apply to v3.8.2 and current source. For known limitations in the v3.8.1 image and binaries, see [release compatibility](installation.md#release-compatibility).
 
 ## Certificate modes
 
@@ -36,7 +36,7 @@ Reference that Secret in your Ingress or server configuration, and configure cli
 
 ### Firefox mode
 
-With a corrected source binary, generate the root CA and server certificate:
+With a v3.8.2 native binary or a source build, generate the root CA and server certificate:
 
 ```bash
 ./certs-maker "--CERT_DNS=lab.com,127.0.0.1" --FOR_FIREFOX=ON
@@ -102,7 +102,7 @@ For private production environments, control who can sign certificates, protect 
 
 - **Untrusted issuer:** import the public issuer certificate into the trust store used by that client, then verify the chain.
 - **Hostname mismatch:** inspect SANs and include the actual hostname/IP in `CERT_DNS`. Setting `CERT_CN` alone does not add a SAN.
-- **Firefox mode on v3.8.1:** that release omits SANs from the final server certificate; use a corrected source build or a later release containing the fix.
+- **Firefox mode on v3.8.1:** that release omits SANs from the final server certificate; upgrade to v3.8.2 or build current source to include the SANs.
 - **Expired or replaced certificate:** generate a replacement, deploy its certificate/key pair, and update client trust when the issuer or pinned certificate changes.
 - **Repeated runs:** output with the same prefix is overwritten. In Firefox mode, a repeated run also replaces the root CA key and certificate; clients may need the new public root certificate.
 

@@ -2,12 +2,12 @@
 
 ## Docker
 
-The published image includes the certificate generator, OpenSSL, and a shell. The v3.8.1 manifest supports Linux `amd64`, `arm64`, `arm/v6`, and `arm/v7`; Docker selects the matching platform.
+The published image includes the certificate generator, OpenSSL, and a shell. The v3.8.2 manifest supports Linux `amd64`, `arm64`, `arm/v6`, and `arm/v7`; Docker selects the matching platform.
 
 ```bash
 docker run --rm -v "$(pwd)/ssl:/ssl" \
   -e "CERT_DNS=lab.com,*.lab.com,*.data.lab.com" \
-  soulteary/certs-maker:v3.8.1
+  soulteary/certs-maker:v3.8.2
 ```
 
 The mount maps host `./ssl` to container `/ssl`. The container starts in `/`, so the default `DIR=./ssl` resolves to `/ssl`. For another host location, change the source side of the mount; keep the destination `/ssl` unless you also change the in-container output path.
@@ -30,13 +30,13 @@ Choose the archive for your operating system and CPU:
 For example, on an Apple Silicon Mac:
 
 ```bash
-curl -fL -o certs-maker_3.8.1_darwin_arm64.tar.gz \
-  https://github.com/soulteary/certs-maker/releases/download/v3.8.1/certs-maker_3.8.1_darwin_arm64.tar.gz
-curl -fL -o certs-maker_3.8.1_checksums.txt \
-  https://github.com/soulteary/certs-maker/releases/download/v3.8.1/certs-maker_3.8.1_checksums.txt
-awk '$2 == "certs-maker_3.8.1_darwin_arm64.tar.gz" { print }' \
-  certs-maker_3.8.1_checksums.txt | shasum -a 256 -c - &&
-tar -xzf certs-maker_3.8.1_darwin_arm64.tar.gz
+curl -fL -o certs-maker_3.8.2_darwin_arm64.tar.gz \
+  https://github.com/soulteary/certs-maker/releases/download/v3.8.2/certs-maker_3.8.2_darwin_arm64.tar.gz
+curl -fL -o certs-maker_3.8.2_checksums.txt \
+  https://github.com/soulteary/certs-maker/releases/download/v3.8.2/certs-maker_3.8.2_checksums.txt
+awk '$2 == "certs-maker_3.8.2_darwin_arm64.tar.gz" { print }' \
+  certs-maker_3.8.2_checksums.txt | shasum -a 256 -c - &&
+tar -xzf certs-maker_3.8.2_darwin_arm64.tar.gz
 openssl version
 command -v sh
 ./certs-maker "--CERT_DNS=lab.com,127.0.0.1" --DIR=ssl
@@ -74,13 +74,13 @@ For an ARM64 host, change `GOARCH` to `arm64` and both Docker platform arguments
 
 ## Release compatibility
 
-The README pins v3.8.1 for reproducible basic examples. That published release predates the source fixes for:
+The README pins v3.8.2 for reproducible examples. This release fixes three known limitations in v3.8.1:
 
 - `EXPIRE_DAYS`: v3.8.1 signs certificates for 3650 days even when another value is provided.
 - Firefox mode: v3.8.1 does not carry SAN extensions into the server certificate.
 - Option precedence: in v3.8.1, an explicit CLI value equal to a built-in default may fail to override an environment variable; this includes `OFF` overriding `ON`.
 
-Use a source build containing the relevant fix, or a later release that includes it, when you need these behaviors. A newer source checkout does not change an already published Docker tag. The [configuration reference](configuration.md) and [certificate guide](certificates.md) describe the corrected source behavior.
+Use v3.8.2 or a newer release, or build current source, when you need these behaviors. The existing v3.8.1 image and binaries are unchanged. The [configuration reference](configuration.md) and [certificate guide](certificates.md) describe v3.8.2 and current source.
 
 ## Sizes
 

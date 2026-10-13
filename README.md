@@ -24,7 +24,7 @@ With Docker installed and running, generate a certificate for `lab.com`, its dir
 ```bash
 docker run --rm -v "$(pwd)/ssl:/ssl" \
   -e "CERT_DNS=lab.com,*.lab.com,127.0.0.1" \
-  soulteary/certs-maker:v3.8.1
+  soulteary/certs-maker:v3.8.2
 ```
 
 The container exits after generation. Your files are saved to `./ssl` on the host:
@@ -45,7 +45,7 @@ For a server that accepts PEM files, configure:
 
 The DER pair contains the same certificate and key in binary form. Private keys are unencrypted; restrict access to them.
 
-**Version note:** the published v3.8.1 image supports this basic example, but predates the custom-validity, Firefox SAN, and CLI-precedence fixes on `main`. Build [current source](#build-from-source) to use those fixes. See [release compatibility](docs/installation.md#release-compatibility) for details.
+**Version note:** the examples use v3.8.2, which includes the custom-validity, Firefox SAN, and CLI-precedence fixes. For known limitations in v3.8.1, see [release compatibility](docs/installation.md#release-compatibility).
 
 ### Docker Compose
 
@@ -54,7 +54,7 @@ Save the following as `docker-compose.yml`:
 ```yaml
 services:
   certs-maker:
-    image: soulteary/certs-maker:v3.8.1
+    image: soulteary/certs-maker:v3.8.2
     environment:
       CERT_DNS: "lab.com,*.lab.com,127.0.0.1"
     volumes:
@@ -71,7 +71,7 @@ The bind mount maps host `./ssl` to container `/ssl`. To use another host direct
 
 ## Build from source
 
-Current source includes the fixes described above. You need the Go version required by [`go.mod`](go.mod), currently **Go 1.27.2**, plus `openssl` and `sh` in `PATH`.
+To build the program locally, you need the Go version required by [`go.mod`](go.mod), currently **Go 1.27.2**, plus `openssl` and `sh` in `PATH`.
 
 ```bash
 git clone https://github.com/soulteary/certs-maker.git
@@ -86,7 +86,7 @@ Prebuilt macOS and Linux archives are available from [GitHub Releases](https://g
 
 ## Choose a certificate mode
 
-The following behavior applies to current source. For Firefox mode and custom validity, use a source build until a published release includes the fixes.
+The following modes are available in v3.8.2 and current source.
 
 | Mode | Setting | Certificate and output |
 | --- | --- | --- |
@@ -153,7 +153,7 @@ Passing these checks confirms the certificate and configured trust relationship.
 
 ## Configuration
 
-Every option supports an environment variable and a matching `--NAME=value` flag. On current source, precedence is:
+Every option supports an environment variable and a matching `--NAME=value` flag. In v3.8.2 and current source, precedence is:
 
 **Non-empty explicit CLI value → environment variable → built-in default.**
 
@@ -169,7 +169,7 @@ CERT_DNS="lab.com,127.0.0.1" ./certs-maker \
 | Option | Default | Purpose |
 | --- | --- | --- |
 | `CERT_DNS` | `lab.com,*.lab.com,*.data.lab.com` | Comma-separated DNS names, wildcard domains, and IP addresses. |
-| `EXPIRE_DAYS` | `3650` | Certificate validity in days. Current source validates a positive integer. |
+| `EXPIRE_DAYS` | `3650` | Certificate validity in days; must be a positive integer. |
 | `FOR_K8S` | `off` | Enable Kubernetes certificate extensions and naming. |
 | `FOR_FIREFOX` | `off` | Generate a local root CA and signed server certificate. |
 | `DIR` | `./ssl` | Output directory in the process’s filesystem. |
@@ -199,7 +199,7 @@ Firefox mode also regenerates the root CA. After replacement, deploy the new ser
 
 - **Hostname or IP mismatch:** inspect SANs and include the address clients actually use in `CERT_DNS`. A common name alone does not establish hostname coverage.
 - **Unknown issuer / untrusted certificate:** configure the trust store used by that client. For Firefox mode, import the root CA from the same generation as the deployed server certificate.
-- **Custom validity ignored or Firefox verification fails on v3.8.1:** use current source or a newer release containing the fixes.
+- **Custom validity ignored or Firefox verification fails on v3.8.1:** upgrade to v3.8.2 or build current source; v3.8.2 includes both fixes.
 - **Missing output:** check the bind mount, output directory, and command exit status. Generation errors can leave partial files; confirm the run succeeded before deploying them.
 
 See the [certificate guide](docs/certificates.md) for certificate/key checks and additional deployment details.
